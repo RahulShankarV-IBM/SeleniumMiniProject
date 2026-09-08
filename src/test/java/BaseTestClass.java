@@ -30,8 +30,11 @@ public class BaseTestClass {
         }
 
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("--start-maximized");
-        // Allow local file:// pages to use localStorage/sessionStorage
+
+        options.addArguments("--headless=new");
+        options.addArguments("--no-sandbox");
+        options.addArguments("--disable-dev-shm-usage");
+        options.addArguments("--window-size=1920,1080");
         options.addArguments("--allow-file-access-from-files");
 
         driver = new ChromeDriver(options);
