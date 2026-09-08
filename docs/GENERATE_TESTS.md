@@ -74,6 +74,43 @@ src/test/
 
 ---
 
+## File placement rules — read before generating any file
+
+Every Java file you generate belongs in a specific subdirectory under `src/test/java/com/propfind/`.
+The table below is the single authority on where each file type lives.
+**Never place a file directly in `src/test/java/` or in `src/test/java/com/propfind/` itself.**
+
+| File type | Subdirectory | Full path pattern |
+|---|---|---|
+| Page Object | `pages/` | `src/test/java/com/propfind/pages/<PageName>Page.java` |
+| Step definitions | `steps/` | `src/test/java/com/propfind/steps/<PageName>Steps.java` |
+| Test context | `context/` | `src/test/java/com/propfind/context/<PageName>TestContext.java` |
+| Hooks | `hooks/` | `src/test/java/com/propfind/hooks/<PageName>Hooks.java` |
+| Runner | `runners/` | `src/test/java/com/propfind/runners/<PageName>Test.java` |
+| Feature file | *(not Java)* | `src/test/resources/features/<PageName>.feature` |
+| Base class | `base/` | `src/test/java/com/propfind/base/BaseTestClass.java` (**do not touch**) |
+| Driver factory | `driver/` | `src/test/java/com/propfind/driver/DriverFactory.java` (**do not touch**) |
+| Extent listener | `listeners/` | `src/test/java/com/propfind/listeners/ExtentReportListener.java` (**do not touch**) |
+
+Each Java file's **first line must be the matching package declaration**:
+
+| Subdirectory | Package declaration |
+|---|---|
+| `pages/` | `package com.propfind.pages;` |
+| `steps/` | `package com.propfind.steps;` |
+| `context/` | `package com.propfind.context;` |
+| `hooks/` | `package com.propfind.hooks;` |
+| `runners/` | `package com.propfind.runners;` |
+
+Cross-references between files require explicit imports, e.g.:
+```java
+import com.propfind.context.LoginTestContext;
+import com.propfind.pages.LoginPage;
+import com.propfind.driver.DriverFactory;
+```
+
+---
+
 ## Established conventions
 
 - **Package:** all Java files use package `com.propfind.<subpackage>` as above

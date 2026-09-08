@@ -28,6 +28,17 @@
     </test>
 
     <!-- ─────────────────────────────────────────────────────────
+         US04  Map View  (Raman)
+         Runner: MapViewTest (Cucumber/TestNG via AbstractTestNGCucumberTests)
+         Feature: src/test/resources/features/MapView.feature
+    ───────────────────────────────────────────────────────────── -->
+    <test name="Map View Tests">
+        <classes>
+            <class name="com.propfind.runners.MapViewTest"/>
+        </classes>
+    </test>
+
+    <!-- ─────────────────────────────────────────────────────────
          US05, US06  Property Detail – Part A  (Rahul)
          Runner: PropertyDetailTest
          Feature: src/test/resources/features/PropertyDetail.feature
