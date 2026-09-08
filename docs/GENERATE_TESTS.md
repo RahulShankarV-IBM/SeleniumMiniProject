@@ -1,6 +1,6 @@
 # PropFind – Test Generation Guide
 
-You are helping automate QA testing for the **PropFind** website — a property listing platform built with plain HTML, CSS, and JavaScript.
+You are helping automate QA testing for the **PropFind** website — a property listing platform built with plain HTML, CSS, and JavaScript. Read ../README.md before continuing
 
 ## Project context
 
