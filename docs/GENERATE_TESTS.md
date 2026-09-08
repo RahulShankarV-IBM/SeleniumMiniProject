@@ -4,20 +4,21 @@ You are helping automate QA testing for the **PropFind** website — a property 
 
 ## Project context
 
-- All HTML files are in `src/test/resources/TargetWebsite - Copy/` (e.g. `login.html`, `search-results.html`, `property-detail.html`, etc.)
+- All HTML files are in `propfind-website/` at the project root (e.g. `login.html`, `search-results.html`, `property-detail.html`, etc.)
 - All interactive elements already have stable `id` attributes added specifically for Selenium testing
 - Dynamic elements generated inside JS template literals also follow stable ID patterns (e.g. `fav-btn-${p.id}`, `compare-chk-${p.id}`, `btn-remove-${p.id}`)
-- **`AssistingFiles/ELEMENT_ID_REGISTRY.md`** — pre-extracted table of every element `id` per page; use this in Step 3 to avoid re-reading HTML files for every generation run
-- **`AssistingFiles/TEAM_ASSIGNMENTS.md`** — maps each team member's name to their assigned TC IDs; used in the Start step below
-- The test case definitions are in `AssistingFiles/Rearranged_testcases.xlsx`
+- **`docs/ELEMENT_ID_REGISTRY.md`** — pre-extracted table of every element `id` per page; use this in Step 3 to avoid re-reading HTML files for every generation run
+- **`docs/TEAM_ASSIGNMENTS.md`** — maps each team member's name to their assigned TC IDs; used in the Start step below
+- The test case definitions are in `docs/Rearranged_testcases.xlsx`
 - The reference implementation already exists — **read these files before generating anything new**:
   - `src/test/resources/features/Login.feature` — Gherkin reference (tags, Background, Scenario Outline, Examples)
-  - `src/test/java/LoginPage.java` — Page Object reference (locator constants, wait strategy, seedUser, query methods)
-  - `src/test/java/LoginSteps.java` — step definitions reference (@Given/@When/@And/@Then, assertion style)
-  - `src/test/java/LoginTestContext.java` — PicoContainer context reference (WebDriver + Page Object per scenario)
-  - `src/test/java/LoginHooks.java` — hooks reference (@Before/@After, screenshot on failure, driver quit)
-  - `src/test/java/LoginTest.java` — runner reference (@CucumberOptions, AbstractTestNGCucumberTests)
-  - `src/test/java/BaseTestClass.java` — shared base class (**DO NOT rewrite or duplicate this**)
+  - `src/test/java/com/propfind/pages/LoginPage.java` — Page Object reference (locator constants, wait strategy, seedUser, query methods)
+  - `src/test/java/com/propfind/steps/LoginSteps.java` — step definitions reference (@Given/@When/@And/@Then, assertion style)
+  - `src/test/java/com/propfind/context/LoginTestContext.java` — PicoContainer context reference (WebDriver + Page Object per scenario)
+  - `src/test/java/com/propfind/hooks/LoginHooks.java` — hooks reference (@Before/@After, screenshot on failure, driver quit)
+  - `src/test/java/com/propfind/runners/LoginTest.java` — runner reference (@CucumberOptions, AbstractTestNGCucumberTests)
+  - `src/test/java/com/propfind/base/BaseTestClass.java` — shared base class (**DO NOT rewrite or duplicate this**)
+  - `src/test/java/com/propfind/driver/DriverFactory.java` — central WebDriver factory (**use this; never inline ChromeOptions**)
 
 ---
 
@@ -36,28 +37,48 @@ You are helping automate QA testing for the **PropFind** website — a property 
 ## Project layout
 
 ```
+propfind-website/              ← the live HTML site under test (project root)
+    index.html
+    login.html
+    css/style.css
+    js/properties.js
+docs/                          ← planning and reference docs
+    ELEMENT_ID_REGISTRY.md
+    GENERATE_TESTS.md
+    TEAM_ASSIGNMENTS.md
+    Rearranged_testcases.xlsx
 src/test/
-  java/                        ← all Java files, default package (no subfolders)
-    BaseTestClass.java         ← WebDriver setup/teardown, pageUrl() helper
-    ExtentReportListener.java  ← TestNG ITestListener; registered in test.xml
-    <Page>Page.java            ← Page Object per page
-    <Page>Steps.java           ← Cucumber step definitions per page
-    <Page>TestContext.java     ← PicoContainer context per page
-    <Page>Hooks.java           ← Cucumber @Before/@After per page
-    <Page>Test.java            ← @CucumberOptions runner per page
+  java/
+    com/propfind/
+      base/
+        BaseTestClass.java     ← WebDriver setup/teardown for plain TestNG tests
+      context/
+        <Page>TestContext.java ← PicoContainer context per page
+      driver/
+        DriverFactory.java     ← central ChromeDriver factory (single source of truth)
+      hooks/
+        <Page>Hooks.java       ← Cucumber @Before/@After per page
+      listeners/
+        ExtentReportListener.java ← TestNG ITestListener; registered in test.xml
+      pages/
+        <Page>Page.java        ← Page Object per page
+      runners/
+        <Page>Test.java        ← @CucumberOptions runner per page
+      steps/
+        <Page>Steps.java       ← Cucumber step definitions per page
   resources/
     features/
       <Page>.feature           ← Gherkin scenarios per page
-    TargetWebsite - Copy/      ← the live HTML site under test
-test.xml                       ← TestNG suite — one <test> block per runner class
+    test.xml                   ← TestNG suite — one <test> block per runner class
 ```
 
 ---
 
 ## Established conventions
 
-- **Package:** all Java files have **no package declaration** (default package)
-- **Base URL:** resolved automatically from `src/test/resources/TargetWebsite - Copy/` inside `<Page>TestContext`; the `file://` URI is built with `new File(...).toURI().toString()`
+- **Package:** all Java files use package `com.propfind.<subpackage>` as above
+- **Base URL:** resolved automatically from `propfind-website/` at the project root inside `<Page>TestContext`; the `file://` URI is built with `new File("propfind-website").toURI().toString()`
+- **Driver creation:** always delegate to `DriverFactory.createChromeDriver()` — never inline `ChromeOptions`
 - **Locator priority:** `By.id` → `By.cssSelector` → `By.name` → `By.xpath` (last resort only)
 - **Page Object rules:**
   - `private static final By` constant per element, using `By.id("...")`
@@ -72,7 +93,7 @@ test.xml                       ← TestNG suite — one <test> block per runner 
   - All Selenium calls go through the Page Object — no `driver` access in steps
   - All assertions use `org.testng.Assert` with a descriptive failure message
 - **Context class rules (`<Page>TestContext`):**
-  - No-arg constructor — creates `ChromeDriver` with `--start-maximized` and `--allow-file-access-from-files`
+  - No-arg constructor — calls `DriverFactory.createChromeDriver()` (not inline Chrome setup)
   - Zero implicit wait; 30-second page load timeout
   - Exposes `getDriver()`, `get<Page>Page()`, and `static getBaseUrl()`
   - One instance per scenario (PicoContainer lifecycle)
@@ -81,7 +102,7 @@ test.xml                       ← TestNG suite — one <test> block per runner 
   - `@After` — on failure, captures screenshot as `byte[]` and attaches via `scenario.attach()`; always calls `driver.quit()`
 - **Runner class rules (`<Page>Test`):**
   - Extends `AbstractTestNGCucumberTests`
-  - `@CucumberOptions`: `features` = path to the `.feature` file, `glue` = `""` (default package), `plugin` includes `"pretty"`, `"html:target/cucumber-reports/<page>/index.html"`, `"json:target/cucumber-reports/<page>/cucumber.json"`
+  - `@CucumberOptions`: `features` = path to the `.feature` file, `glue` = `"com.propfind"`, `plugin` includes `"pretty"`, `"html:target/cucumber-reports/<page>/index.html"`, `"json:target/cucumber-reports/<page>/cucumber.json"`
   - `monochrome = true`
 - **`Select` option text** — always pass the **full visible label** to `selectByVisibleText()`, not the `value` attribute. Open the HTML and copy the exact `<option>` text node before writing the call.
 
@@ -115,8 +136,8 @@ Call `loginAs()` from the `@Before` hook in `<Page>Hooks` instead of navigating 
 | US01 | `login.html` | `LoginPage.java`, `LoginSteps.java`, `LoginTestContext.java`, `LoginHooks.java`, `LoginTest.java`, `Login.feature` ✓ |
 | US02, US03 | `search-results.html` | – |
 | US04 | `map-view.html` | – |
-| US05, US06 | `property-detail.html` | `PropertyDetailPage.java`, `PropertyDetailSteps.java`, `PropertyDetailTestContext.java`, `PropertyDetailHooks.java`, `PropertyDetailTest.java`, `PropertyDetail.feature` ✓ |
-| US09, US10, US14 | `property-detail.html` | – (Rohit — adds to same files) |
+| US05, US06 | `property-detail.html` | – |
+| US09, US10, US14 | `property-detail.html` | – (Rohit — adds to same files as US05/US06) |
 | US07, US11 | `dashboard.html` | – |
 | US08 | `compare.html` | – |
 | US12 | `budget-planner.html` | – |
@@ -135,7 +156,7 @@ Ask the user:
 Once the user provides their name, do the following **before** Step 1:
 
 ### Name Lookup
-1. Open `AssistingFiles/TEAM_ASSIGNMENTS.md` and find the row where the **Person** column matches the name provided (case-insensitive).
+1. Open `docs/TEAM_ASSIGNMENTS.md` and find the row where the **Person** column matches the name provided (case-insensitive).
 2. Read the **Test Cases** column for that row — expand any ranges (e.g. `TC01–TC05` → TC01, TC02, TC03, TC04, TC05).
 3. Confirm the discovered TC list with the user:
    > *"I found your assignments: **[TC IDs]** covering **[pages]**. Shall I proceed?"*
@@ -146,7 +167,7 @@ Once the user provides their name, do the following **before** Step 1:
 
 ## Step 1 — Read the test case definitions
 
-Read `AssistingFiles/Rearranged_testcases.xlsx` and extract the rows matching the confirmed TC IDs.
+Read `docs/Rearranged_testcases.xlsx` and extract the rows matching the confirmed TC IDs.
 Record the **Test Scenario**, **Test Steps**, **Expected Result**, **Classification**, **Priority**, and **User Story** for each row.
 
 ---
@@ -159,9 +180,9 @@ Use the User Story column from Step 1 and the Page → file mapping table above 
 
 ## Step 3 — Collect element IDs
 
-- Open `AssistingFiles/ELEMENT_ID_REGISTRY.md` and extract the ID table for the page(s) identified in Step 2.
+- Open `docs/ELEMENT_ID_REGISTRY.md` and extract the ID table for the page(s) identified in Step 2.
 - Only fall back to reading the raw HTML file if an ID you need is missing from the registry. If you do read the HTML, add the missing ID to the registry before emitting any code.
-- If the **"Existing files?"** column shows `✓`, read the existing files from `src/test/java/` and `src/test/resources/features/` first — add only what is missing; do not regenerate complete files.
+- If the **"Existing files?"** column shows `✓`, read the existing files from `src/test/java/com/propfind/` and `src/test/resources/features/` first — add only what is missing; do not regenerate complete files.
 - The IDs from the registry are the **only** locators to use. Cross-check: every `By.id("...")` you write must appear in the registry before you emit any code.
 
 ---
@@ -195,10 +216,12 @@ Use the User Story column from Step 1 and the Page → file mapping table above 
 
 ## Step 5 — Generate File 2: Page Object
 
-- **Output:** `src/test/java/<PageName>Page.java`, no package declaration
+- **Output:** `src/test/java/com/propfind/pages/<PageName>Page.java`
 - If the file exists, add only the missing locators and methods
 - Template structure (follow `LoginPage.java` exactly):
   ```java
+  package com.propfind.pages;
+
   import org.openqa.selenium.By;
   import org.openqa.selenium.WebDriver;
   import org.openqa.selenium.WebElement;
@@ -239,10 +262,14 @@ Use the User Story column from Step 1 and the Page → file mapping table above 
 
 ## Step 6 — Generate File 3: Step definitions
 
-- **Output:** `src/test/java/<PageName>Steps.java`, no package declaration
+- **Output:** `src/test/java/com/propfind/steps/<PageName>Steps.java`
 - If the file exists, add only the missing step methods
 - Template structure (follow `LoginSteps.java` exactly):
   ```java
+  package com.propfind.steps;
+
+  import com.propfind.context.<PageName>TestContext;
+  import com.propfind.pages.<PageName>Page;
   import io.cucumber.java.en.*;
   import org.testng.Assert;
 
@@ -264,15 +291,16 @@ Use the User Story column from Step 1 and the Page → file mapping table above 
 
 ## Step 7 — Generate File 4: Test context
 
-- **Output:** `src/test/java/<PageName>TestContext.java`, no package declaration
+- **Output:** `src/test/java/com/propfind/context/<PageName>TestContext.java`
 - If the file exists, do not regenerate it
 - Template structure (follow `LoginTestContext.java` exactly):
   ```java
+  package com.propfind.context;
+
+  import com.propfind.driver.DriverFactory;
+  import com.propfind.pages.<PageName>Page;
   import org.openqa.selenium.WebDriver;
-  import org.openqa.selenium.chrome.ChromeDriver;
-  import org.openqa.selenium.chrome.ChromeOptions;
   import java.io.File;
-  import java.time.Duration;
 
   public class <PageName>TestContext {
 
@@ -282,20 +310,16 @@ Use the User Story column from Step 1 and the Page → file mapping table above 
 
       public <PageName>TestContext() {
           if (baseUrl == null || baseUrl.isBlank()) {
-              File siteRoot = new File("src/test/resources/TargetWebsite - Copy");
+              File siteRoot = new File("propfind-website");
               baseUrl = siteRoot.toURI().toString();
           }
-          ChromeOptions options = new ChromeOptions();
-          options.addArguments("--start-maximized", "--allow-file-access-from-files");
-          driver = new ChromeDriver(options);
-          driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(0));
-          driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
-          page = new <PageName>Page(driver);
+          driver = DriverFactory.createChromeDriver();
+          page   = new <PageName>Page(driver);
       }
 
-      public WebDriver getDriver()            { return driver; }
+      public WebDriver getDriver()              { return driver; }
       public <PageName>Page get<PageName>Page() { return page; }
-      public static String getBaseUrl()       { return baseUrl; }
+      public static String getBaseUrl()         { return baseUrl; }
   }
   ```
 
@@ -303,10 +327,13 @@ Use the User Story column from Step 1 and the Page → file mapping table above 
 
 ## Step 8 — Generate File 5: Hooks
 
-- **Output:** `src/test/java/<PageName>Hooks.java`, no package declaration
+- **Output:** `src/test/java/com/propfind/hooks/<PageName>Hooks.java`
 - If the file exists, do not regenerate it
 - Template structure (follow `LoginHooks.java` exactly):
   ```java
+  package com.propfind.hooks;
+
+  import com.propfind.context.<PageName>TestContext;
   import io.cucumber.java.After;
   import io.cucumber.java.Before;
   import io.cucumber.java.Scenario;
@@ -338,16 +365,18 @@ Use the User Story column from Step 1 and the Page → file mapping table above 
 
 ## Step 9 — Generate File 6: Cucumber–TestNG runner
 
-- **Output:** `src/test/java/<PageName>Test.java`, no package declaration
+- **Output:** `src/test/java/com/propfind/runners/<PageName>Test.java`
 - If the file exists, do not regenerate it
 - Template structure (follow `LoginTest.java` exactly):
   ```java
+  package com.propfind.runners;
+
   import io.cucumber.testng.AbstractTestNGCucumberTests;
   import io.cucumber.testng.CucumberOptions;
 
   @CucumberOptions(
       features = "src/test/resources/features/<PageName>.feature",
-      glue     = "",
+      glue     = "com.propfind",
       plugin   = {
           "pretty",
           "html:target/cucumber-reports/<pagename>/index.html",
@@ -358,11 +387,11 @@ Use the User Story column from Step 1 and the Page → file mapping table above 
   public class <PageName>Test extends AbstractTestNGCucumberTests {
   }
   ```
-- After creating this file, add a `<test>` block to `src/test/test.xml`:
+- After creating this file, add a `<test>` block to `src/test/resources/test.xml`:
   ```xml
   <test name="<PageName> Tests">
       <classes>
-          <class name="<PageName>Test"/>
+          <class name="com.propfind.runners.<PageName>Test"/>
       </classes>
   </test>
   ```
@@ -373,14 +402,15 @@ Use the User Story column from Step 1 and the Page → file mapping table above 
 ## Step 10 — Self-review before output
 
 Before presenting any code, verify:
-- [ ] Every `By.id("...")` value exists in `AssistingFiles/ELEMENT_ID_REGISTRY.md`
+- [ ] Every `By.id("...")` value exists in `docs/ELEMENT_ID_REGISTRY.md`
 - [ ] No `Thread.sleep` — only `WebDriverWait`
 - [ ] No assertions inside Page Object methods
 - [ ] No `driver` access inside step definition methods
-- [ ] `BaseTestClass.java` and `ExtentReportListener.java` are not modified or re-emitted
+- [ ] `BaseTestClass.java`, `ExtentReportListener.java`, and `DriverFactory.java` are not modified or re-emitted
 - [ ] Auth-protected pages have `loginAs()` in the Page Object and call it from `@Before` in Hooks
 - [ ] Every `selectByVisibleText("...")` argument matches the exact visible `<option>` text from the HTML
-- [ ] Runner class added to `src/test/test.xml`
+- [ ] Runner class added to `src/test/resources/test.xml` with fully-qualified class name `com.propfind.runners.<PageName>Test`
+- [ ] All new files have the correct `package com.propfind.<subpackage>;` declaration
 
 ---
 

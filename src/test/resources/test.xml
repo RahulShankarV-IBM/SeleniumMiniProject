@@ -10,7 +10,7 @@
 
     <!-- Extent Reports listener – generates target/extent-reports/ExtentReport_<timestamp>.html -->
     <listeners>
-        <listener class-name="ExtentReportListener"/>
+        <listener class-name="com.propfind.listeners.ExtentReportListener"/>
     </listeners>
 
     <!-- Optional: override the base URL for all tests at once -->
@@ -23,7 +23,7 @@
     ───────────────────────────────────────────────────────────── -->
     <test name="Login Tests">
         <classes>
-            <class name="LoginTest"/>
+            <class name="com.propfind.runners.LoginTest"/>
         </classes>
     </test>
 
@@ -31,53 +31,53 @@
          US05, US06  Property Detail – Part A  (Rahul)
          Runner: PropertyDetailTest
          Feature: src/test/resources/features/PropertyDetail.feature
-    ───────────────────────────────────────────────────────────── -->
-<!--    <test name="Property Detail Tests">-->
-<!--        <classes>-->
-<!--            <class name="PropertyDetailTest"/>-->
-<!--        </classes>-->
-<!--    </test>-->
+    ─────────────────────────────────────────────────────────────
+    <test name="Property Detail Tests">
+        <classes>
+            <class name="com.propfind.runners.PropertyDetailTest"/>
+        </classes>
+    </test>-->
 
     <!--
     <test name="Search Results Tests">
         <classes>
-            <class name="SearchResultsTest"/>
+            <class name="com.propfind.runners.SearchResultsTest"/>
         </classes>
     </test>
 
     <test name="Map View Tests">
         <classes>
-            <class name="MapViewTest"/>
+            <class name="com.propfind.runners.MapViewTest"/>
         </classes>
     </test>
 
     <test name="Dashboard Tests">
         <classes>
-            <class name="DashboardTest"/>
+            <class name="com.propfind.runners.DashboardTest"/>
         </classes>
     </test>
 
     <test name="Compare Tests">
         <classes>
-            <class name="CompareTest"/>
+            <class name="com.propfind.runners.CompareTest"/>
         </classes>
     </test>
 
     <test name="Budget Planner Tests">
         <classes>
-            <class name="BudgetPlannerTest"/>
+            <class name="com.propfind.runners.BudgetPlannerTest"/>
         </classes>
     </test>
 
     <test name="Add Listing Tests">
         <classes>
-            <class name="AddListingTest"/>
+            <class name="com.propfind.runners.AddListingTest"/>
         </classes>
     </test>
 
     <test name="Moving Assistant Tests">
         <classes>
-            <class name="MovingAssistantTest"/>
+            <class name="com.propfind.runners.MovingAssistantTest"/>
         </classes>
     </test>
     -->

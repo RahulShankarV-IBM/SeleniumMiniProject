@@ -1,3 +1,5 @@
+package com.propfind.runners;
+
 import io.cucumber.testng.AbstractTestNGCucumberTests;
 import io.cucumber.testng.CucumberOptions;
 
@@ -6,7 +8,7 @@ import io.cucumber.testng.CucumberOptions;
  *
  * Cucumber picks up:
  *   features  → src/test/resources/features/Login.feature
- *   glue      → LoginSteps, LoginHooks, LoginTestContext (all in default package)
+ *   glue      → com.propfind (all sub-packages: steps, hooks, context)
  *
  * Reports:
  *   - Cucumber HTML  → target/cucumber-reports/login/index.html
@@ -15,7 +17,7 @@ import io.cucumber.testng.CucumberOptions;
  */
 @CucumberOptions(
     features = "src/test/resources/features/Login.feature",
-    glue     = "",          // default package — all step/hook classes are here
+    glue     = "com.propfind",
     plugin   = {
         "pretty",
         "html:target/cucumber-reports/login/index.html",

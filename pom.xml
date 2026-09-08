@@ -71,10 +71,10 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.5.2</version>
                 <configuration>
-                    <suiteXmlFiles>
-                        <suiteXmlFile>src/test/test.xml</suiteXmlFile>
-                    </suiteXmlFiles>
-                </configuration>
+                        <suiteXmlFiles>
+                            <suiteXmlFile>src/test/resources/test.xml</suiteXmlFile>
+                        </suiteXmlFiles>
+                    </configuration>
             </plugin>
         </plugins>
     </build>

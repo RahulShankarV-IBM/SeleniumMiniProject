@@ -1,8 +1,11 @@
+package com.propfind.listeners;
+
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.aventstack.extentreports.reporter.configuration.Theme;
+import com.propfind.base.BaseTestClass;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -11,15 +14,17 @@ import org.testng.ITestListener;
 import org.testng.ITestResult;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
  * TestNG listener that builds an Extent Reports HTML report.
  * Registered in test.xml — no changes needed in test classes.
+ *
+ * Screenshot capture works for plain TestNG tests that extend BaseTestClass.
+ * For Cucumber scenarios, screenshots are attached directly via scenario.attach()
+ * in each feature's Hooks class (@After hook) — that path is intentional and
+ * independent of this listener.
  *
  * Output: target/extent-reports/ExtentReport_<timestamp>.html
  */
@@ -85,12 +90,13 @@ public class ExtentReportListener implements ITestListener {
         ExtentTest node = testNode.get();
         node.log(Status.FAIL, result.getThrowable());
 
-        // Attach screenshot if the test class exposes a WebDriver
-        WebDriver driver = getDriver(result);
+        // Attach screenshot only for plain TestNG tests that extend BaseTestClass.
+        // Cucumber scenario screenshots are handled in each feature's Hooks (@After).
+        WebDriver driver = getDriverFromTestNG(result);
         if (driver instanceof TakesScreenshot ts) {
             try {
-                byte[] png  = ts.getScreenshotAs(OutputType.BYTES);
-                String b64  = java.util.Base64.getEncoder().encodeToString(png);
+                byte[] png = ts.getScreenshotAs(OutputType.BYTES);
+                String b64 = java.util.Base64.getEncoder().encodeToString(png);
                 node.addScreenCaptureFromBase64String(b64, "Failure screenshot");
             } catch (Exception ignored) {
                 node.log(Status.WARNING, "Could not capture screenshot: " + ignored.getMessage());
@@ -110,13 +116,14 @@ public class ExtentReportListener implements ITestListener {
     // ── Helper ────────────────────────────────────────────────────────────────
 
     /**
-     * Retrieves the WebDriver from the test instance if it extends BaseTestClass.
-     * Returns null safely if the driver is unavailable.
+     * Retrieves the WebDriver from the test instance when it extends BaseTestClass
+     * (plain TestNG tests). Returns null for Cucumber runners —
+     * those attach screenshots via scenario.attach() in their Hooks class instead.
      */
-    private WebDriver getDriver(ITestResult result) {
+    private WebDriver getDriverFromTestNG(ITestResult result) {
         Object instance = result.getInstance();
         if (instance instanceof BaseTestClass base) {
-            return base.driver;
+            return base.getDriver();
         }
         return null;
     }

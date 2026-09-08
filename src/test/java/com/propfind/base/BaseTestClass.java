@@ -1,14 +1,18 @@
+package com.propfind.base;
+
+import com.propfind.driver.DriverFactory;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 
 import java.io.File;
-import java.time.Duration;
 
+/**
+ * Base class for plain TestNG tests (non-Cucumber).
+ * Cucumber-based tests use their own TestContext + LoginHooks instead.
+ */
 public class BaseTestClass {
 
     protected WebDriver driver;
@@ -16,30 +20,25 @@ public class BaseTestClass {
 
     /**
      * Receives the optional baseUrl parameter from test.xml.
-     * Falls back to the local TargetWebsite copy bundled in test resources.
+     * Falls back to the local TargetWebsite copy bundled in the project root.
      */
     @BeforeMethod
     @Parameters("baseUrl")
     public void setUp(@Optional("") String baseUrl) {
         if (baseUrl == null || baseUrl.isBlank()) {
-            // Resolve the bundled HTML site from the classpath-accessible resources directory
-            File siteRoot = new File("src/test/resources/TargetWebsite - Copy");
+            // Resolve the bundled HTML site from the project-root propfind-website folder
+            File siteRoot = new File("propfind-website");
             this.baseUrl = siteRoot.toURI().toString();
         } else {
             this.baseUrl = baseUrl.endsWith("/") ? baseUrl : baseUrl + "/";
         }
 
-        ChromeOptions options = new ChromeOptions();
+        driver = DriverFactory.createChromeDriver();
+    }
 
-        options.addArguments("--headless=new");
-        options.addArguments("--no-sandbox");
-        options.addArguments("--disable-dev-shm-usage");
-        options.addArguments("--window-size=1920,1080");
-        options.addArguments("--allow-file-access-from-files");
-
-        driver = new ChromeDriver(options);
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(0)); // rely on explicit waits only
-        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
+    /** Exposes the driver to listeners (e.g. ExtentReportListener) outside this package. */
+    public WebDriver getDriver() {
+        return driver;
     }
 
     @AfterMethod

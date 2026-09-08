@@ -1,3 +1,6 @@
+package com.propfind.hooks;
+
+import com.propfind.context.LoginTestContext;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
