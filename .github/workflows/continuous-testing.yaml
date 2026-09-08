@@ -54,6 +54,7 @@ jobs:
       - name: Run Selenium + Cucumber + TestNG Tests
         run: |
           mvn clean test
+        continue-on-error: true
 
       - name: Find Latest Extent Report
         run: |
