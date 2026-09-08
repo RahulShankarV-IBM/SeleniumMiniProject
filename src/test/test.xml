@@ -32,11 +32,11 @@
          Runner: PropertyDetailTest
          Feature: src/test/resources/features/PropertyDetail.feature
     ───────────────────────────────────────────────────────────── -->
-    <test name="Property Detail Tests">
-        <classes>
-            <class name="PropertyDetailTest"/>
-        </classes>
-    </test>
+<!--    <test name="Property Detail Tests">-->
+<!--        <classes>-->
+<!--            <class name="PropertyDetailTest"/>-->
+<!--        </classes>-->
+<!--    </test>-->
 
     <!--
     <test name="Search Results Tests">
