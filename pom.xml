@@ -72,7 +72,7 @@
                 <version>3.5.2</version>
                 <configuration>
                     <suiteXmlFiles>
-                        <suiteXmlFile>src/test/test.xml</suiteXmlFile>
+                        <suiteXmlFile>src/test/resources/test.xml</suiteXmlFile>
                     </suiteXmlFiles>
                 </configuration>
             </plugin>

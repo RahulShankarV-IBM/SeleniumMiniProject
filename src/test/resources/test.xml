@@ -15,6 +15,7 @@
 
     <!-- Optional: override the base URL for all tests at once -->
     <parameter name="baseUrl" value=""/>
+    <parameter name="headless" value="true"/>
 
     <!-- ─────────────────────────────────────────────────────────
          US01  Login / Register  (Raman)
@@ -39,6 +40,36 @@
     </test>
 
     <!-- ─────────────────────────────────────────────────────────
+         US02  Smart Property Search  (Prabavathi)
+         TC06–TC10 — SearchResultsTest (TestNG)
+    ───────────────────────────────────────────────────────────── -->
+    <!-- ─────────────────────────────────────────────────────────
+         US03  Advanced Property Filters  (Prabavathi)
+         TC11–TC15 — SearchResultsTest (TestNG)
+    ───────────────────────────────────────────────────────────── -->
+    <test name="Search Results Tests (US02, US03)">
+        <parameter name="headless" value="true"/>
+        <classes>
+            <class name="tests.SearchResultsTest"/>
+        </classes>
+    </test>
+
+    <!-- ─────────────────────────────────────────────────────────
+         US07  User Dashboard  (Prabavathi)
+         TC31–TC35 — DashboardTest (TestNG)
+    ───────────────────────────────────────────────────────────── -->
+    <!-- ─────────────────────────────────────────────────────────
+         US11  Property Preferences  (Prabavathi)
+         TC51–TC55 — DashboardTest (TestNG)
+    ───────────────────────────────────────────────────────────── -->
+    <test name="Dashboard Tests (US07, US11)">
+        <parameter name="headless" value="true"/>
+        <classes>
+            <class name="tests.DashboardTest"/>
+        </classes>
+    </test>
+
+    <!-- ─────────────────────────────────────────────────────────
          US05, US06  Property Detail – Part A  (Rahul)
          Runner: PropertyDetailTest
          Feature: src/test/resources/features/PropertyDetail.feature
@@ -48,49 +79,5 @@
             <class name="com.propfind.runners.PropertyDetailTest"/>
         </classes>
     </test>-->
-
-    <!--
-    <test name="Search Results Tests">
-        <classes>
-            <class name="com.propfind.runners.SearchResultsTest"/>
-        </classes>
-    </test>
-
-    <test name="Map View Tests">
-        <classes>
-            <class name="com.propfind.runners.MapViewTest"/>
-        </classes>
-    </test>
-
-    <test name="Dashboard Tests">
-        <classes>
-            <class name="com.propfind.runners.DashboardTest"/>
-        </classes>
-    </test>
-
-    <test name="Compare Tests">
-        <classes>
-            <class name="com.propfind.runners.CompareTest"/>
-        </classes>
-    </test>
-
-    <test name="Budget Planner Tests">
-        <classes>
-            <class name="com.propfind.runners.BudgetPlannerTest"/>
-        </classes>
-    </test>
-
-    <test name="Add Listing Tests">
-        <classes>
-            <class name="com.propfind.runners.AddListingTest"/>
-        </classes>
-    </test>
-
-    <test name="Moving Assistant Tests">
-        <classes>
-            <class name="com.propfind.runners.MovingAssistantTest"/>
-        </classes>
-    </test>
-    -->
 
 </suite>
