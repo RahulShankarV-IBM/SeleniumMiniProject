@@ -18,8 +18,16 @@ public class DriverFactory {
     /** Returns a maximised ChromeDriver with settings required for local file:// testing. */
     public static WebDriver createChromeDriver() {
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("--start-maximized");
-        // Allow local file:// pages to use localStorage / sessionStorage
+
+        if (System.getenv("GITHUB_ACTIONS") != null) {
+            options.addArguments("--headless=new");
+            options.addArguments("--no-sandbox");
+            options.addArguments("--disable-dev-shm-usage");
+            options.addArguments("--window-size=1920,1080");
+        } else {
+            options.addArguments("--start-maximized");
+        }
+
         options.addArguments("--allow-file-access-from-files");
 
         WebDriver driver = new ChromeDriver(options);
