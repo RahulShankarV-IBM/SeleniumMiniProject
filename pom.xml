@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.example</groupId>
-    <artifactId>MiniprojectSelenium</artifactId>
+    <artifactId>SeleniumMiniProject</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
@@ -15,6 +15,19 @@
     </properties>
 
     <dependencies>
+        <!-- Source: https://mvnrepository.com/artifact/io.cucumber/cucumber-java -->
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-java</artifactId>
+            <version>7.34.7</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-testng</artifactId>
+            <version>7.34.7</version>
+            <scope>test</scope>
+        </dependency>
         <!-- Source: https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java -->
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
@@ -35,6 +48,20 @@
             <version>2.16.1</version>
             <scope>test</scope>
         </dependency>
+        <!-- Cucumber PicoContainer – constructor injection for step/hook classes -->
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-picocontainer</artifactId>
+            <version>7.34.7</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Extent Reports – rich HTML test reporting -->
+        <dependency>
+            <groupId>com.aventstack</groupId>
+            <artifactId>extentreports</artifactId>
+            <version>5.1.2</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -51,4 +78,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>
