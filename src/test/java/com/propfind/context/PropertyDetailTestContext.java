@@ -14,7 +14,7 @@ import java.io.File;
 public class PropertyDetailTestContext {
 
     private final WebDriver driver;
-    private final PropertyDetailPage page;
+    private final PropertyDetailPage propertyDetailPage;
     private static String baseUrl;
 
     public PropertyDetailTestContext() {
@@ -22,11 +22,11 @@ public class PropertyDetailTestContext {
             File siteRoot = new File("propfind-website");
             baseUrl = siteRoot.toURI().toString();
         }
-        driver = DriverFactory.createChromeDriver();
-        page   = new PropertyDetailPage(driver);
+        driver             = DriverFactory.createChromeDriver();
+        propertyDetailPage = new PropertyDetailPage(driver);
     }
 
     public WebDriver getDriver()                          { return driver; }
-    public PropertyDetailPage getPropertyDetailPage()     { return page; }
+    public PropertyDetailPage getPropertyDetailPage()     { return propertyDetailPage; }
     public static String getBaseUrl()                     { return baseUrl; }
 }

@@ -9,7 +9,7 @@ import io.cucumber.java.en.When;
 import org.testng.Assert;
 
 /**
- * Step definitions for PropertyDetail.feature (TC21–TC30).
+ * Step definitions for PropertyDetail.feature (TC21–TC30, TC41–TC50, TC66–TC70).
  * All Selenium interactions are delegated to PropertyDetailPage — no driver calls here.
  * The shared PropertyDetailPage instance is provided via PropertyDetailTestContext.
  */
@@ -26,6 +26,16 @@ public class PropertyDetailSteps {
     @Given("I am on the property detail page for property {int}")
     public void iAmOnThePropertyDetailPage(int propertyId) {
         page.navigateTo(PropertyDetailTestContext.getBaseUrl(), propertyId);
+    }
+
+    @Given("I am on the property detail page")
+    public void iAmOnThePropertyDetailPage() {
+        page.navigateTo(PropertyDetailTestContext.getBaseUrl());
+    }
+
+    @Given("I am on the property detail page as a logged-in user")
+    public void iAmOnThePropertyDetailPageAsLoggedInUser() {
+        page.loginAs(PropertyDetailTestContext.getBaseUrl(), "testuser", "Test@1234");
     }
 
     // ── TC21 — Open property details page ────────────────────────────────────
@@ -151,5 +161,183 @@ public class PropertyDetailSteps {
     public void theNearbyFacilitiesShouldDisplayEmergencyFacilities() {
         Assert.assertTrue(page.isEmergencyFacilitiesDisplayed(),
                 "Expected both 'Police Station' and 'Fire Station' to appear as emergency facilities");
+    }
+
+    // ── Schedule Visit actions ─────────────────────────────────────────────────
+
+    @When("I click the Schedule Visit button")
+    public void iClickTheScheduleVisitButton() {
+        page.clickScheduleVisit();
+    }
+
+    @And("I select the visit date {string}")
+    public void iSelectTheVisitDate(String date) {
+        page.selectVisitDate(date);
+    }
+
+    @And("I select the visit time slot {string}")
+    public void iSelectTheVisitTimeSlot(String timeSlot) {
+        page.selectVisitTimeSlot(timeSlot);
+    }
+
+    @And("I enter visitor name {string}")
+    public void iEnterVisitorName(String name) {
+        page.enterVisitorName(name);
+    }
+
+    @And("I enter visitor phone {string}")
+    public void iEnterVisitorPhone(String phone) {
+        page.enterVisitorPhone(phone);
+    }
+
+    @And("I confirm the booking")
+    public void iConfirmTheBooking() {
+        page.confirmBooking();
+    }
+
+    @And("I confirm the booking without filling any fields")
+    public void iConfirmBookingWithoutFillingFields() {
+        page.confirmBooking();
+    }
+
+    @When("I close the schedule visit modal")
+    public void iCloseTheScheduleVisitModal() {
+        page.closeScheduleModal();
+    }
+
+    // ── Contact Owner actions ──────────────────────────────────────────────────
+
+    @When("I click the Contact Owner button")
+    public void iClickTheContactOwnerButton() {
+        page.clickContactOwner();
+    }
+
+    @And("I enter inquiry message {string}")
+    public void iEnterInquiryMessage(String message) {
+        page.enterInquiryMessage(message);
+    }
+
+    @And("I enter an inquiry message exceeding 500 characters")
+    public void iEnterInquiryMessageExceeding500Characters() {
+        page.enterInquiryMessageOverLimit("A".repeat(501));
+    }
+
+    @And("I enter contact name {string}")
+    public void iEnterContactName(String name) {
+        page.enterContactName(name);
+    }
+
+    @And("I enter contact phone {string}")
+    public void iEnterContactPhone(String phone) {
+        page.enterContactPhone(phone);
+    }
+
+    @And("I submit the inquiry")
+    public void iSubmitTheInquiry() {
+        page.submitInquiry();
+    }
+
+    // ── Report Listing actions ─────────────────────────────────────────────────
+
+    @When("I open the report listing form")
+    public void iOpenTheReportListingForm() {
+        page.openReportForm();
+    }
+
+    @And("I select report reason {string}")
+    public void iSelectReportReason(String reason) {
+        page.selectReportReason(reason);
+    }
+
+    @And("I submit the report")
+    public void iSubmitTheReport() {
+        page.submitReport();
+    }
+
+    @And("I submit the report without selecting a reason")
+    public void iSubmitReportWithoutReason() {
+        page.submitReportWithoutReason();
+    }
+
+    // ── Assertions ─────────────────────────────────────────────────────────────
+
+    @Then("the schedule visit modal should be displayed")
+    public void theScheduleVisitModalShouldBeDisplayed() {
+        Assert.assertTrue(page.isScheduleModalVisible(),
+                "Expected the schedule visit modal to be visible");
+    }
+
+    @Then("the visit date and time slot fields should be visible")
+    public void theVisitDateAndTimeSlotFieldsShouldBeVisible() {
+        Assert.assertTrue(page.isVisitDateVisible(),
+                "Expected the visit date field to be visible");
+        Assert.assertTrue(page.isVisitTimeVisible(),
+                "Expected the visit time slot field to be visible");
+    }
+
+    @Then("the visit booking should be confirmed successfully")
+    public void theVisitBookingShouldBeConfirmedSuccessfully() {
+        Assert.assertTrue(page.isBookingConfirmed(),
+                "Expected the booking to succeed and the schedule modal to close");
+    }
+
+    @Then("a booking validation error should be displayed")
+    public void aBookingValidationErrorShouldBeDisplayed() {
+        Assert.assertTrue(page.isModalAlertVisible(),
+                "Expected a validation error alert inside the schedule visit modal");
+    }
+
+    @Then("the schedule visit modal should be closed")
+    public void theScheduleVisitModalShouldBeClosed() {
+        Assert.assertTrue(page.isScheduleModalClosed(),
+                "Expected the schedule visit modal to be closed");
+    }
+
+    @Then("the Contact Owner button should be visible")
+    public void theContactOwnerButtonShouldBeVisibleInSidebar() {
+        Assert.assertTrue(page.isContactOwnerButtonVisible(),
+                "Expected the Contact Owner button to be visible on the property detail page");
+    }
+
+    @Then("the inquiry should be sent successfully")
+    public void theInquiryShouldBeSentSuccessfully() {
+        Assert.assertTrue(page.isInquirySent(),
+                "Expected the inquiry to be sent and the contact modal to close");
+    }
+
+    @Then("a contact validation error should be displayed")
+    public void aContactValidationErrorShouldBeDisplayed() {
+        Assert.assertTrue(page.isContactAlertVisible(),
+                "Expected a validation error alert inside the contact owner modal");
+    }
+
+    @Then("the verified property badge should be displayed")
+    public void theVerifiedPropertyBadgeShouldBeDisplayed() {
+        Assert.assertTrue(page.isVerifiedBadgeDisplayed(),
+                "Expected the verified badge to be visible on a verified property listing");
+    }
+
+    @Then("the report should be submitted successfully")
+    public void theReportShouldBeSubmittedSuccessfully() {
+        Assert.assertTrue(page.isReportSubmitted(),
+                "Expected the report to be submitted and the report modal to close");
+    }
+
+    @Then("a report validation error should be displayed")
+    public void aReportValidationErrorShouldBeDisplayed() {
+        Assert.assertTrue(page.isReportAlertVisible(),
+                "Expected a validation error alert inside the report modal");
+    }
+
+    @Then("the property safety information section should be displayed")
+    public void thePropertySafetyInformationSectionShouldBeDisplayed() {
+        Assert.assertTrue(page.isSafetySectionDisplayed(),
+                "Expected the Safety & Security section to be visible on the property detail page");
+    }
+
+    @Then("the property amenities section should be displayed")
+    public void thePropertyAmenitiesSectionShouldBeDisplayed() {
+        Assert.assertTrue(page.isAmenitiesSectionDisplayed(),
+                "Expected at least one amenity tag to be visible on the property detail page");
     }
 }

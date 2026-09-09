@@ -2,11 +2,10 @@ package com.propfind.hooks;
 
 import com.propfind.context.PropertyDetailTestContext;
 import io.cucumber.java.After;
-import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
 
 /**
- * Cucumber hooks for the Property Detail feature.
+ * Cucumber hooks for the Property Detail feature (TC21–TC30, TC41–TC50, TC66–TC70).
  * Handles screenshot-on-failure and driver teardown per scenario.
  */
 public class PropertyDetailHooks {
@@ -15,11 +14,6 @@ public class PropertyDetailHooks {
 
     public PropertyDetailHooks(PropertyDetailTestContext ctx) {
         this.ctx = ctx;
-    }
-
-    @Before
-    public void beforeScenario(Scenario scenario) {
-        // Nothing needed before each scenario — driver is created in PropertyDetailTestContext constructor
     }
 
     @After

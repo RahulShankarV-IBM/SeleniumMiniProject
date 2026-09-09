@@ -6,47 +6,47 @@
   Run all tests:  mvn test
   Override site:  mvn test -DbaseUrl=http://localhost:8080/
 -->
+
 <suite name="PropFind" verbose="1" parallel="false">
 
-    <!-- Extent Reports listener – generates target/extent-reports/ExtentReport_<timestamp>.html -->
+    <!-- Extent Reports listener -->
     <listeners>
         <listener class-name="com.propfind.listeners.ExtentReportListener"/>
     </listeners>
 
-    <!-- Optional: override the base URL for all tests at once -->
+    <!-- Global parameters -->
     <parameter name="baseUrl" value=""/>
     <parameter name="headless" value="true"/>
 
-    <!-- ─────────────────────────────────────────────────────────
-         US01  Login / Register  (Raman)
-         Runner: LoginTest (Cucumber/TestNG via AbstractTestNGCucumberTests)
-         Feature: src/test/resources/features/Login.feature
-    ───────────────────────────────────────────────────────────── -->
-    <!-- <test name="Login Tests">
+    <!-- =========================================================
+         US01 Login / Register (Raman)
+         Runner: LoginTest
+    ========================================================== -->
+    <!--
+    <test name="Login Tests">
         <classes>
             <class name="com.propfind.runners.LoginTest"/>
         </classes>
-    </test> -->
+    </test>
+    -->
 
-    <!-- ─────────────────────────────────────────────────────────
-         US04  Map View  (Raman)
-         Runner: MapViewTest (Cucumber/TestNG via AbstractTestNGCucumberTests)
-         Feature: src/test/resources/features/MapView.feature
-    ───────────────────────────────────────────────────────────── -->
-    <!-- <test name="Map View Tests">
+    <!-- =========================================================
+         US04 Map View (Raman)
+         Runner: MapViewTest
+    ========================================================== -->
+    <!--
+    <test name="Map View Tests">
         <classes>
             <class name="com.propfind.runners.MapViewTest"/>
         </classes>
-    </test> -->
+    </test>
+    -->
 
-    <!-- ─────────────────────────────────────────────────────────
-         US02  Smart Property Search  (Prabavathi)
-         TC06–TC10 — SearchResultsTest (TestNG)
-    ───────────────────────────────────────────────────────────── -->
-    <!-- ─────────────────────────────────────────────────────────
-         US03  Advanced Property Filters  (Prabavathi)
-         TC11–TC15 — SearchResultsTest (TestNG)
-    ───────────────────────────────────────────────────────────── -->
+    <!-- =========================================================
+         US02 Smart Property Search
+         US03 Advanced Property Filters
+         TC06-TC15
+    ========================================================== -->
     <test name="Search Results Tests (US02, US03)">
         <parameter name="headless" value="true"/>
         <classes>
@@ -54,14 +54,11 @@
         </classes>
     </test>
 
-    <!-- ─────────────────────────────────────────────────────────
-         US07  User Dashboard  (Prabavathi)
-         TC31–TC35 — DashboardTest (TestNG)
-    ───────────────────────────────────────────────────────────── -->
-    <!-- ─────────────────────────────────────────────────────────
-         US11  Property Preferences  (Prabavathi)
-         TC51–TC55 — DashboardTest (TestNG)
-    ───────────────────────────────────────────────────────────── -->
+    <!-- =========================================================
+         US07 User Dashboard
+         US11 Property Preferences
+         TC31-TC55
+    ========================================================== -->
     <test name="Dashboard Tests (US07, US11)">
         <parameter name="headless" value="true"/>
         <classes>
@@ -69,15 +66,24 @@
         </classes>
     </test>
 
-    <!-- ─────────────────────────────────────────────────────────
-         US05, US06  Property Detail – Part A  (Rahul)
-         Runner: PropertyDetailTest (Cucumber/TestNG via AbstractTestNGCucumberTests)
+    <!-- =========================================================
+         US05, US06 Property Detail – Part A (Rahul)
+         US09, US10, US14 Property Detail – Part B (Rohit)
+         Runner: PropertyDetailTest
          Feature: src/test/resources/features/PropertyDetail.feature
-    ───────────────────────────────────────────────────────────── -->
+    ========================================================== -->
     <test name="Property Detail Tests">
         <classes>
             <class name="com.propfind.runners.PropertyDetailTest"/>
         </classes>
     </test>
+
+    <!--
+    <test name="Search Results Tests">
+        <classes>
+            <class name="com.propfind.runners.SearchResultsTest"/>
+        </classes>
+    </test>
+    -->
 
 </suite>
