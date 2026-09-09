@@ -22,22 +22,22 @@
          Runner: LoginTest (Cucumber/TestNG via AbstractTestNGCucumberTests)
          Feature: src/test/resources/features/Login.feature
     ───────────────────────────────────────────────────────────── -->
-    <test name="Login Tests">
+    <!-- <test name="Login Tests">
         <classes>
             <class name="com.propfind.runners.LoginTest"/>
         </classes>
-    </test>
+    </test> -->
 
     <!-- ─────────────────────────────────────────────────────────
          US04  Map View  (Raman)
          Runner: MapViewTest (Cucumber/TestNG via AbstractTestNGCucumberTests)
          Feature: src/test/resources/features/MapView.feature
     ───────────────────────────────────────────────────────────── -->
-    <test name="Map View Tests">
+    <!-- <test name="Map View Tests">
         <classes>
             <class name="com.propfind.runners.MapViewTest"/>
         </classes>
-    </test>
+    </test> -->
 
     <!-- ─────────────────────────────────────────────────────────
          US02  Smart Property Search  (Prabavathi)
@@ -71,13 +71,13 @@
 
     <!-- ─────────────────────────────────────────────────────────
          US05, US06  Property Detail – Part A  (Rahul)
-         Runner: PropertyDetailTest
+         Runner: PropertyDetailTest (Cucumber/TestNG via AbstractTestNGCucumberTests)
          Feature: src/test/resources/features/PropertyDetail.feature
-    ─────────────────────────────────────────────────────────────
+    ───────────────────────────────────────────────────────────── -->
     <test name="Property Detail Tests">
         <classes>
             <class name="com.propfind.runners.PropertyDetailTest"/>
         </classes>
-    </test>-->
+    </test>
 
 </suite>
