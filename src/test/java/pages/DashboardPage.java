@@ -108,19 +108,19 @@ public class DashboardPage {
     // ── Sidebar nav actions ───────────────────────────────────────────────────
 
     public void clickFavoritesNav() {
-        jsClick(wait.until(ExpectedConditions.elementToBeClickable(NAV_FAVORITES)));
+        wait.until(ExpectedConditions.elementToBeClickable(NAV_FAVORITES)).click();
     }
 
     public void clickRecentNav() {
-        jsClick(wait.until(ExpectedConditions.elementToBeClickable(NAV_RECENT)));
+        wait.until(ExpectedConditions.elementToBeClickable(NAV_RECENT)).click();
     }
 
     public void clickRecommendationsNav() {
-        jsClick(wait.until(ExpectedConditions.elementToBeClickable(NAV_RECOMMENDATIONS)));
+        wait.until(ExpectedConditions.elementToBeClickable(NAV_RECOMMENDATIONS)).click();
     }
 
     public void clickPreferencesNav() {
-        jsClick(wait.until(ExpectedConditions.elementToBeClickable(NAV_PREFERENCES)));
+        wait.until(ExpectedConditions.elementToBeClickable(NAV_PREFERENCES)).click();
     }
 
     // ── Panel visibility queries ──────────────────────────────────────────────
@@ -211,7 +211,7 @@ public class DashboardPage {
     }
 
     public void clickSavePreferences() {
-        jsClick(wait.until(ExpectedConditions.elementToBeClickable(BTN_SAVE_PREFS)));
+        wait.until(ExpectedConditions.elementToBeClickable(BTN_SAVE_PREFS)).click();
     }
 
     public boolean isPreferencesSavedAlertDisplayed() {

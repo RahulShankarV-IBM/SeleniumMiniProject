@@ -78,11 +78,6 @@ public class LoginPage {
 
     public void submitLoginForm() {
         wait.until(ExpectedConditions.elementToBeClickable(BTN_LOGIN)).click();
-        // HTML redirects via setTimeout(..., 500) — wait for URL to change
-        wait.until(ExpectedConditions.or(
-            ExpectedConditions.urlContains("index.html"),
-            ExpectedConditions.visibilityOfElementLocated(LOGIN_ALERT)
-        ));
     }
 
     // ── Register actions ──────────────────────────────────────────────────────
@@ -113,11 +108,6 @@ public class LoginPage {
 
     public void submitRegistrationForm() {
         wait.until(ExpectedConditions.elementToBeClickable(BTN_REGISTER)).click();
-        // HTML redirects via setTimeout(..., 500) — wait for URL to change
-        wait.until(ExpectedConditions.or(
-            ExpectedConditions.urlContains("index.html"),
-            ExpectedConditions.visibilityOfElementLocated(REG_ALERT)
-        ));
     }
 
     public void submitRegistrationFormEmpty() {
