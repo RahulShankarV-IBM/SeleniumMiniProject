@@ -1,94 +1,23 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
 
 <!--
-  PropFind – TestNG Suite
-  Run all tests:  mvn test
-  Override site:  mvn test -DbaseUrl=http://localhost:8080/
+    baseUrl is OPTIONAL — when omitted, BaseTest resolves it automatically
+    to src/test/resources/TargetWebsite/ relative to the project root.
+    Only set it here if you want to override with a custom path, e.g.:
+    <parameter name="baseUrl" value="file:///C:/Users/YourName/.../TargetWebsite/"/>
 -->
-<suite name="PropFind" verbose="1" parallel="false">
+<suite name="PropFind-Suite" verbose="1">
 
-    <!-- Extent Reports listener – generates target/extent-reports/ExtentReport_<timestamp>.html -->
     <listeners>
-        <listener class-name="ExtentReportListener"/>
+        <listener class-name="reporter.TestListener"/>
     </listeners>
 
-    <!-- Optional: override the base URL for all tests at once -->
-    <parameter name="baseUrl" value=""/>
+    <parameter name="headless" value="false"/>
 
-    <!-- ─────────────────────────────────────────────────────────
-         US01  Login / Register  (Raman)
-         Runner: LoginTest (Cucumber/TestNG via AbstractTestNGCucumberTests)
-         Feature: src/test/resources/features/Login.feature
-    ───────────────────────────────────────────────────────────── -->
-    <!-- US01 Login / Register (Raman) -->
-<!--
-<test name="Login Tests">
-    <classes>
-        <class name="LoginTest"/>
-    </classes>
-</test>
--->
-   
-    <!-- ─────────────────────────────────────────────────────────
-         US05, US06  Property Detail – Part A  (Rahul)
-         Runner: PropertyDetailTest
-         Feature: src/test/resources/features/PropertyDetail.feature
-    ───────────────────────────────────────────────────────────── -->
-  
-
-    <!-- ─────────────────────────────────────────────────────────
-         US08  Compare Properties  (Nithyasri)
-         Runner: CompareTest
-         Feature: src/test/resources/features/Compare.feature
-    ───────────────────────────────────────────────────────────── -->
-    <test name="Compare Tests">
-        <classes>
-            <class name="CompareTest"/>
-        </classes>
+    <test name="PropFind-Tests">
+        <packages>
+            <package name="tests"/>
+        </packages>
     </test>
-
-    <!-- ─────────────────────────────────────────────────────────
-         US12  Budget Planner  (Nithyasri)
-         Runner: BudgetPlannerTest
-         Feature: src/test/resources/features/BudgetPlanner.feature
-    ───────────────────────────────────────────────────────────── -->
-    <test name="Budget Planner Tests">
-        <classes>
-            <class name="BudgetPlannerTest"/>
-        </classes>
-    </test>
-
-    <!--
-    <test name="Search Results Tests">
-        <classes>
-            <class name="SearchResultsTest"/>
-        </classes>
-    </test>
-
-    <test name="Map View Tests">
-        <classes>
-            <class name="MapViewTest"/>
-        </classes>
-    </test>
-
-    <test name="Dashboard Tests">
-        <classes>
-            <class name="DashboardTest"/>
-        </classes>
-    </test>
-
-    <test name="Add Listing Tests">
-        <classes>
-            <class name="AddListingTest"/>
-        </classes>
-    </test>
-
-    <test name="Moving Assistant Tests">
-        <classes>
-            <class name="MovingAssistantTest"/>
-        </classes>
-    </test>
-    -->
 
 </suite>
