@@ -11,7 +11,7 @@ Built with **Java 21 · Selenium 4.27 · Cucumber 7.34 · TestNG 7.10 · Extent 
 |---|---|---|---|---|
 | Raman | `login.html`, `map-view.html` | US01, US04 | TC01–TC05, TC16–TC20 | ✅ Done |
 | Prabavathi | `search-results.html` | US02, US03 | TC06–TC15 | – |
-| Nithyasri | `compare.html`, `budget-planner.html` | US08, US12 | TC36–TC40, TC56–TC60 |✅ Done|
+| Nithyasri | `compare.html`, `budget-planner.html` | US08, US12 | TC36–TC40, TC56–TC60 | – |
 | Sherin | `add-listing.html`, `moving-assistant.html` | US13, US15 | TC61–TC65, TC71–TC75 | – |
 | Nived | `dashboard.html` | US07, US11 | TC31–TC35, TC51–TC55 | – |
 | Rahul | `property-detail.html` (Part A) | US05, US06 | TC21–TC30 | – |
