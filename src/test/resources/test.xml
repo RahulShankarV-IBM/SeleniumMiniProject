@@ -6,101 +6,109 @@
   Run all tests:  mvn test
   Override site:  mvn test -DbaseUrl=http://localhost:8080/
 -->
-
 <suite name="PropFind" verbose="1" parallel="false">
 
-    <!-- Extent Reports listener -->
+    <!-- Listeners -->
     <listeners>
         <listener class-name="com.propfind.listeners.ExtentReportListener"/>
+        <listener class-name="com.propfind.listeners.TestListener"/>
     </listeners>
 
-    <!-- Global parameters -->
-    <parameter name="baseUrl" value=""/>
-    <parameter name="headless" value="true"/>
+    <!-- Optional overrides -->
+    <parameter name="baseUrl"  value=""/>
+    <parameter name="headless" value="false"/>
 
-    <!-- =========================================================
-         US01 Login / Register (Raman)
-         Runner: LoginTest
-    ========================================================== -->
+    <!-- ═══════════════════════════════════════════════════════════════
+         US01  Login / Register  (Raman)
+         Cucumber runner · Login.feature
+    ════════════════════════════════════════════════════════════════════ -->
     <test name="Login Tests">
         <classes>
             <class name="com.propfind.runners.LoginTest"/>
         </classes>
     </test>
 
-    <!-- =========================================================
-         US04 Map View (Raman)
-         Runner: MapViewTest
-    ========================================================== -->
+    <!-- ═══════════════════════════════════════════════════════════════
+         US02  Smart Property Search
+         US03  Advanced Property Filters  (Prabavathi)
+         Plain TestNG · SearchResultsTest
+    ════════════════════════════════════════════════════════════════════ -->
+    <test name="Search Results Tests">
+        <classes>
+            <class name="com.propfind.tests.SearchResultsTest"/>
+        </classes>
+    </test>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         US04  Map View  (Raman)
+         Cucumber runner · MapView.feature
+    ════════════════════════════════════════════════════════════════════ -->
     <test name="Map View Tests">
         <classes>
             <class name="com.propfind.runners.MapViewTest"/>
         </classes>
     </test>
 
-    <!-- =========================================================
-         US02 Smart Property Search
-         US03 Advanced Property Filters
-         TC06-TC15
-    ========================================================== -->
-    <test name="Search Results Tests (US02, US03)">
-        <parameter name="headless" value="true"/>
-        <classes>
-            <class name="tests.SearchResultsTest"/>
-        </classes>
-    </test>
-
-    <!-- =========================================================
-         US07 User Dashboard
-         US11 Property Preferences
-         TC31-TC55
-    ========================================================== -->
-     <test name="Dashboard Tests (US07, US11)">
-        <parameter name="headless" value="true"/>
-        <classes>
-            <class name="tests.DashboardTest"/>
-        </classes>
-    </test>
-
-
-    <!-- =========================================================
-         US05, US06 Property Detail – Part A (Rahul)
-         US09, US10, US14 Property Detail – Part B (Rohit)
-         Runner: PropertyDetailTest
-         Feature: src/test/resources/features/PropertyDetail.feature
-    ========================================================== -->
-     <test name="Property Detail Tests">
+    <!-- ═══════════════════════════════════════════════════════════════
+         US05  Property Detail – Part A  (Rahul)
+         US06  Property Detail – Part A  (Rahul)
+         US09  Property Detail – Part B  (Rohit)
+         US10  Property Detail – Part B  (Rohit)
+         US14  Property Detail – Part B  (Rohit)
+         Cucumber runner · PropertyDetail.feature
+    ════════════════════════════════════════════════════════════════════ -->
+    <test name="Property Detail Tests">
         <classes>
             <class name="com.propfind.runners.PropertyDetailTest"/>
         </classes>
     </test>
 
-    <!--<test name="Search Results Tests">
+    <!-- ═══════════════════════════════════════════════════════════════
+         US07  User Dashboard   (Nived)
+         US11  Property Preferences  (Nived)
+         Cucumber runner · Dashboard.feature
+    ════════════════════════════════════════════════════════════════════ -->
+    <test name="Dashboard Tests">
         <classes>
-            <class name="com.propfind.runners.SearchResultsTest"/>
+            <class name="com.propfind.runners.DashboardTest"/>
         </classes>
-    </test>-->
-    <!-- =========================================================
-         US08 Compare Properties (Nithyasri)
-         Runner: CompareTest
-         Feature: src/test/resources/features/Compare.feature
-    ========================================================== -->
+    </test>
 
+    <!-- ═══════════════════════════════════════════════════════════════
+         US07 / US11 plain TestNG cross-check  (Nived)
+         Plain TestNG · DashboardTest
+         Runs the same TC31–TC35, TC51–TC55 scenarios outside Cucumber.
+    ════════════════════════════════════════════════════════════════════ -->
+    <test name="Dashboard Tests (plain TestNG)">
+        <classes>
+            <class name="com.propfind.tests.DashboardTest"/>
+        </classes>
+    </test>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         US08  Compare Properties  (Nithyasri)
+         Cucumber runner · Compare.feature
+    ════════════════════════════════════════════════════════════════════ -->
     <test name="Compare Tests">
         <classes>
             <class name="com.propfind.runners.CompareTest"/>
         </classes>
     </test>
 
-    <!-- =========================================================
-         US12 Budget Planner (Nithyasri)
-         Runner: BudgetPlannerTest
-         Feature: src/test/resources/features/BudgetPlanner.feature
-    ========================================================== -->
+    <!-- ═══════════════════════════════════════════════════════════════
+         US12  Budget Planner  (Nithyasri)
+         Cucumber runner · BudgetPlanner.feature
+    ════════════════════════════════════════════════════════════════════ -->
     <test name="Budget Planner Tests">
         <classes>
             <class name="com.propfind.runners.BudgetPlannerTest"/>
         </classes>
     </test>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         Pending — no feature file or runner yet:
+         US13  Add Listing       (Sherin)  → AddListingTest
+         US15  Moving Assistant  (Sherin)  → MovingAssistantTest
+    ════════════════════════════════════════════════════════════════════ -->
 
 </suite>

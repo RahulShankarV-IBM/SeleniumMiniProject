@@ -1,5 +1,4 @@
-// Author: Prabavathi-raghu | US02, US03 | TC06–TC15
-package pages;
+package com.propfind.pages;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -13,17 +12,14 @@ import java.time.Duration;
 import java.util.List;
 
 /**
- * Page Object for search-results.html
- *
- * All locators use stable id= attributes that were added to the HTML
- * specifically for Selenium testing.
+ * Page Object for search-results.html — US02 (TC06–TC10) and US03 (TC11–TC15).
  */
 public class SearchResultsPage {
 
     private final WebDriver driver;
     private final WebDriverWait wait;
 
-    // ── Locators ──────────────────────────────────────────────────────────────
+    // ── Locators ─────────────────────────────────────────────────────────────
 
     // Search bar
     private static final By LOC_SEARCH_INPUT   = By.id("search-loc");
@@ -35,33 +31,33 @@ public class SearchResultsPage {
     private static final By LOC_RESULTS_COUNT  = By.id("results-count");
     private static final By LOC_SORT_SELECT    = By.id("sort-by");
 
-    // Sidebar filters – budget
+    // Sidebar filters — budget
     private static final By LOC_F_MIN          = By.id("f-min");
     private static final By LOC_F_MAX          = By.id("f-max");
 
-    // Sidebar filters – BHK buttons
+    // Sidebar filters — BHK buttons
     private static final By LOC_BHK_1          = By.id("bhk-btn-1");
     private static final By LOC_BHK_2          = By.id("bhk-btn-2");
     private static final By LOC_BHK_3          = By.id("bhk-btn-3");
     private static final By LOC_BHK_4          = By.id("bhk-btn-4");
 
-    // Sidebar filters – furnishing radios (located by name + value)
-    private static final By LOC_FURNISH_ANY     = By.cssSelector("input[name='furnish'][value='']");
-    private static final By LOC_FURNISH_FULL    = By.cssSelector("input[name='furnish'][value='Fully Furnished']");
-    private static final By LOC_FURNISH_SEMI    = By.cssSelector("input[name='furnish'][value='Semi-Furnished']");
-    private static final By LOC_FURNISH_UN      = By.cssSelector("input[name='furnish'][value='Unfurnished']");
+    // Sidebar filters — furnishing radios (located by name + value)
+    private static final By LOC_FURNISH_ANY  = By.cssSelector("input[name='furnish'][value='']");
+    private static final By LOC_FURNISH_FULL = By.cssSelector("input[name='furnish'][value='Fully Furnished']");
+    private static final By LOC_FURNISH_SEMI = By.cssSelector("input[name='furnish'][value='Semi-Furnished']");
+    private static final By LOC_FURNISH_UN   = By.cssSelector("input[name='furnish'][value='Unfurnished']");
 
-    // Sidebar filters – amenity checkboxes
-    private static final By LOC_F_WIFI          = By.id("f-wifi");
-    private static final By LOC_F_PARKING       = By.id("f-parking");
-    private static final By LOC_F_PET           = By.id("f-pet");
-    private static final By LOC_F_POWER         = By.id("f-power");
-    private static final By LOC_F_GATED         = By.id("f-gated");
-    private static final By LOC_F_CCTV          = By.id("f-cctv");
-    private static final By LOC_F_VERIFIED      = By.id("f-verified");
+    // Sidebar filters — amenity checkboxes
+    private static final By LOC_F_WIFI     = By.id("f-wifi");
+    private static final By LOC_F_PARKING  = By.id("f-parking");
+    private static final By LOC_F_PET      = By.id("f-pet");
+    private static final By LOC_F_POWER    = By.id("f-power");
+    private static final By LOC_F_GATED    = By.id("f-gated");
+    private static final By LOC_F_CCTV     = By.id("f-cctv");
+    private static final By LOC_F_VERIFIED = By.id("f-verified");
 
-    // Sidebar filters – property type checkboxes
-    private static final By LOC_TYPE_APARTMENT  = By.id("type-chk-apartment");
+    // Sidebar filters — property type checkboxes
+    private static final By LOC_TYPE_APARTMENT = By.id("type-chk-apartment");
     private static final By LOC_TYPE_VILLA      = By.id("type-chk-villa");
     private static final By LOC_TYPE_IND_HOUSE  = By.id("type-chk-independent-house");
     private static final By LOC_TYPE_STUDIO     = By.id("type-chk-studio");
@@ -69,14 +65,14 @@ public class SearchResultsPage {
     private static final By LOC_TYPE_PENTHOUSE  = By.id("type-chk-penthouse");
 
     // Filter action buttons
-    private static final By LOC_BTN_APPLY       = By.id("btn-apply-filters");
-    private static final By LOC_BTN_CLEAR       = By.id("btn-clear-filters");
+    private static final By LOC_BTN_APPLY = By.id("btn-apply-filters");
+    private static final By LOC_BTN_CLEAR = By.id("btn-clear-filters");
 
     // Results grid + no-results
-    private static final By LOC_RESULTS_GRID    = By.id("results-grid");
-    private static final By LOC_NO_RESULTS      = By.id("no-results");
-    private static final By LOC_CARD_TITLE      = By.cssSelector("#results-grid .card-title");
-    private static final By LOC_CARD_PRICE      = By.cssSelector("#results-grid .card-price");
+    private static final By LOC_RESULTS_GRID = By.id("results-grid");
+    private static final By LOC_NO_RESULTS   = By.id("no-results");
+    private static final By LOC_CARD_TITLE   = By.cssSelector("#results-grid .card-title");
+    private static final By LOC_CARD_PRICE   = By.cssSelector("#results-grid .card-price");
 
     // ── Constructor ───────────────────────────────────────────────────────────
 
@@ -125,9 +121,9 @@ public class SearchResultsPage {
 
     public void clickBhkButton(int bhk) {
         By locator = switch (bhk) {
-            case 1 -> LOC_BHK_1;
-            case 2 -> LOC_BHK_2;
-            case 3 -> LOC_BHK_3;
+            case 1  -> LOC_BHK_1;
+            case 2  -> LOC_BHK_2;
+            case 3  -> LOC_BHK_3;
             default -> LOC_BHK_4;
         };
         driver.findElement(locator).click();
@@ -136,10 +132,10 @@ public class SearchResultsPage {
 
     public void selectFurnishing(String value) {
         By locator = switch (value) {
-            case "Fully Furnished"  -> LOC_FURNISH_FULL;
-            case "Semi-Furnished"   -> LOC_FURNISH_SEMI;
-            case "Unfurnished"      -> LOC_FURNISH_UN;
-            default                 -> LOC_FURNISH_ANY;
+            case "Fully Furnished" -> LOC_FURNISH_FULL;
+            case "Semi-Furnished"  -> LOC_FURNISH_SEMI;
+            case "Unfurnished"     -> LOC_FURNISH_UN;
+            default                -> LOC_FURNISH_ANY;
         };
         driver.findElement(locator).click();
         waitForResultsGridReady();
@@ -147,13 +143,13 @@ public class SearchResultsPage {
 
     public void checkAmenity(String amenity) {
         By locator = switch (amenity.toLowerCase()) {
-            case "parking"          -> LOC_F_PARKING;
-            case "pet friendly"     -> LOC_F_PET;
-            case "wi-fi", "wifi"    -> LOC_F_WIFI;
-            case "power backup"     -> LOC_F_POWER;
-            case "gated community"  -> LOC_F_GATED;
-            case "cctv"             -> LOC_F_CCTV;
-            case "verified"         -> LOC_F_VERIFIED;
+            case "parking"         -> LOC_F_PARKING;
+            case "pet friendly"    -> LOC_F_PET;
+            case "wi-fi", "wifi"   -> LOC_F_WIFI;
+            case "power backup"    -> LOC_F_POWER;
+            case "gated community" -> LOC_F_GATED;
+            case "cctv"            -> LOC_F_CCTV;
+            case "verified"        -> LOC_F_VERIFIED;
             default -> throw new IllegalArgumentException("Unknown amenity: " + amenity);
         };
         WebElement chk = driver.findElement(locator);
@@ -162,12 +158,12 @@ public class SearchResultsPage {
 
     public void checkPropertyType(String type) {
         By locator = switch (type.toLowerCase()) {
-            case "apartment"          -> LOC_TYPE_APARTMENT;
-            case "villa"              -> LOC_TYPE_VILLA;
-            case "independent house"  -> LOC_TYPE_IND_HOUSE;
-            case "studio"             -> LOC_TYPE_STUDIO;
-            case "builder floor"      -> LOC_TYPE_BUILDER;
-            case "penthouse"          -> LOC_TYPE_PENTHOUSE;
+            case "apartment"         -> LOC_TYPE_APARTMENT;
+            case "villa"             -> LOC_TYPE_VILLA;
+            case "independent house" -> LOC_TYPE_IND_HOUSE;
+            case "studio"            -> LOC_TYPE_STUDIO;
+            case "builder floor"     -> LOC_TYPE_BUILDER;
+            case "penthouse"         -> LOC_TYPE_PENTHOUSE;
             default -> throw new IllegalArgumentException("Unknown type: " + type);
         };
         WebElement chk = driver.findElement(locator);
@@ -219,37 +215,42 @@ public class SearchResultsPage {
     }
 
     /**
-     * Parses a price label to an integer for comparison.
-     * Handles formats: "₹45,000/mo", "₹85 Lakhs", "₹2.5 Cr"
+     * Parses a price label to an integer for sort-order comparison.
+     * Handles: "₹45,000/mo", "₹85 Lakhs", "₹2.5 Cr"
      */
     public int parsePriceFromLabel(String label) {
-        String normalised = label.trim().toLowerCase();
-        if (normalised.contains("cr")) {
-            // e.g. "₹2.5 Cr" → 2.5 × 10_000_000
-            String num = normalised.replaceAll("[^0-9.]", "").trim();
-            return (int)(Double.parseDouble(num) * 10_000_000);
-        } else if (normalised.contains("lakh") || normalised.contains("lac")) {
-            // e.g. "₹85 Lakhs" → 85 × 100_000
-            String num = normalised.replaceAll("[^0-9.]", "").trim();
-            return (int)(Double.parseDouble(num) * 100_000);
+        String n = label.trim().toLowerCase();
+        if (n.contains("cr")) {
+            return (int)(Double.parseDouble(n.replaceAll("[^0-9.]", "").trim()) * 10_000_000);
+        } else if (n.contains("lakh") || n.contains("lac")) {
+            return (int)(Double.parseDouble(n.replaceAll("[^0-9.]", "").trim()) * 100_000);
         } else {
-            // e.g. "₹45,000/mo" → strip non-digits → 45000
-            return Integer.parseInt(normalised.replaceAll("[^0-9]", "").trim());
+            return Integer.parseInt(n.replaceAll("[^0-9]", "").trim());
         }
     }
 
     public boolean isBhkButtonActive(int bhk) {
         By locator = switch (bhk) {
-            case 1 -> LOC_BHK_1;
-            case 2 -> LOC_BHK_2;
-            case 3 -> LOC_BHK_3;
+            case 1  -> LOC_BHK_1;
+            case 2  -> LOC_BHK_2;
+            case 3  -> LOC_BHK_3;
             default -> LOC_BHK_4;
         };
         return driver.findElement(locator).getAttribute("class").contains("btn-primary");
     }
 
     public boolean isAmenityFilterChecked(String amenity) {
-        return checkAmenityState(amenity);
+        By locator = switch (amenity.toLowerCase()) {
+            case "parking"         -> LOC_F_PARKING;
+            case "pet friendly"    -> LOC_F_PET;
+            case "wi-fi", "wifi"   -> LOC_F_WIFI;
+            case "power backup"    -> LOC_F_POWER;
+            case "gated community" -> LOC_F_GATED;
+            case "cctv"            -> LOC_F_CCTV;
+            case "verified"        -> LOC_F_VERIFIED;
+            default -> throw new IllegalArgumentException("Unknown amenity: " + amenity);
+        };
+        return driver.findElement(locator).isSelected();
     }
 
     public String getLocationFieldValue() {
@@ -269,19 +270,5 @@ public class SearchResultsPage {
     private void jsClick(WebElement element) {
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", element);
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", element);
-    }
-
-    private boolean checkAmenityState(String amenity) {
-        By locator = switch (amenity.toLowerCase()) {
-            case "parking"         -> LOC_F_PARKING;
-            case "pet friendly"    -> LOC_F_PET;
-            case "wi-fi", "wifi"   -> LOC_F_WIFI;
-            case "power backup"    -> LOC_F_POWER;
-            case "gated community" -> LOC_F_GATED;
-            case "cctv"            -> LOC_F_CCTV;
-            case "verified"        -> LOC_F_VERIFIED;
-            default -> throw new IllegalArgumentException("Unknown amenity: " + amenity);
-        };
-        return driver.findElement(locator).isSelected();
     }
 }
