@@ -16,7 +16,7 @@ public class PropertyDetailHooks {
         this.ctx = ctx;
     }
 
-    @After
+    @After("@US05 or @US06 or @US09 or @US10 or @US14")
     public void afterScenario(Scenario scenario) {
         if (scenario.isFailed()) {
             try {

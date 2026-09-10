@@ -17,12 +17,12 @@ public class CompareHooks {
         this.ctx = ctx;
     }
 
-    @Before
+    @Before("@US08")
     public void beforeScenario(Scenario scenario) {
-        // Nothing needed before each scenario — driver is created in CompareTestContext constructor
+        // Nothing needed before each Compare scenario — driver initialises lazily on first step.
     }
 
-    @After
+    @After("@US08")
     public void afterScenario(Scenario scenario) {
         if (scenario.isFailed()) {
             try {

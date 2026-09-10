@@ -1,13 +1,12 @@
 package com.propfind.base;
 
+import com.propfind.config.SiteConfig;
 import com.propfind.driver.DriverFactory;
 import org.openqa.selenium.WebDriver;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
-
-import java.io.File;
 
 /**
  * Base class for plain TestNG tests (non-Cucumber).
@@ -25,13 +24,11 @@ public class BaseTestClass {
     @BeforeMethod
     @Parameters("baseUrl")
     public void setUp(@Optional("") String baseUrl) {
-        if (baseUrl == null || baseUrl.isBlank()) {
-            // Resolve the bundled HTML site from the project-root propfind-website folder
-            File siteRoot = new File("propfind-website");
-            this.baseUrl = siteRoot.toURI().toString();
-        } else {
-            this.baseUrl = baseUrl.endsWith("/") ? baseUrl : baseUrl + "/";
-        }
+        // Delegate resolution to SiteConfig — honours -DbaseUrl system property and
+        // the bundled propfind-website folder in the same priority order as Cucumber tests.
+        this.baseUrl = (baseUrl != null && !baseUrl.isBlank())
+                ? (baseUrl.endsWith("/") ? baseUrl : baseUrl + "/")
+                : SiteConfig.resolveBaseUrl();
 
         driver = DriverFactory.createChromeDriver();
     }

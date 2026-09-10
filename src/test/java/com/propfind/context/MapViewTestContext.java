@@ -1,32 +1,38 @@
 package com.propfind.context;
 
+import com.propfind.config.SiteConfig;
 import com.propfind.driver.DriverFactory;
 import com.propfind.pages.MapViewPage;
 import org.openqa.selenium.WebDriver;
-
-import java.io.File;
 
 /**
  * Cucumber PicoContainer context — one instance per scenario.
  * Holds the WebDriver and MapViewPage so they can be injected into
  * both MapViewSteps and MapViewHooks without static state.
+ *
+ * The driver is created lazily on first access so that dry-runs or
+ * tag-filtered scenarios that skip all steps never open a browser.
  */
 public class MapViewTestContext {
 
-    private final WebDriver driver;
-    private final MapViewPage mapViewPage;
-    private static String baseUrl;
+    private WebDriver driver;
+    private MapViewPage mapViewPage;
 
-    public MapViewTestContext() {
-        if (baseUrl == null || baseUrl.isBlank()) {
-            File siteRoot = new File("propfind-website");
-            baseUrl = siteRoot.toURI().toString();
+    /** Lazily initialises the driver and page on first call. */
+    public WebDriver getDriver() {
+        if (driver == null) {
+            driver      = DriverFactory.createChromeDriver();
+            mapViewPage = new MapViewPage(driver);
         }
-        driver      = DriverFactory.createChromeDriver();
-        mapViewPage = new MapViewPage(driver);
+        return driver;
     }
 
-    public WebDriver getDriver()          { return driver; }
-    public MapViewPage getMapViewPage()   { return mapViewPage; }
-    public static String getBaseUrl()     { return baseUrl; }
+    public MapViewPage getMapViewPage() {
+        getDriver();
+        return mapViewPage;
+    }
+
+    public static String getBaseUrl() {
+        return SiteConfig.resolveBaseUrl();
+    }
 }

@@ -17,12 +17,12 @@ public class LoginHooks {
         this.ctx = ctx;
     }
 
-    @Before
+    @Before("@US01")
     public void beforeScenario(Scenario scenario) {
-        // Nothing needed before each scenario — driver is created in LoginTestContext constructor
+        // Nothing needed before each Login scenario — driver initialises lazily on first step.
     }
 
-    @After
+    @After("@US01")
     public void afterScenario(Scenario scenario) {
         if (scenario.isFailed()) {
             try {

@@ -17,12 +17,12 @@ public class BudgetPlannerHooks {
         this.ctx = ctx;
     }
 
-    @Before
+    @Before("@US12")
     public void beforeScenario(Scenario scenario) {
-        // Nothing needed before each scenario — driver is created in BudgetPlannerTestContext constructor
+        // Nothing needed before each BudgetPlanner scenario — driver initialises lazily on first step.
     }
 
-    @After
+    @After("@US12")
     public void afterScenario(Scenario scenario) {
         if (scenario.isFailed()) {
             try {

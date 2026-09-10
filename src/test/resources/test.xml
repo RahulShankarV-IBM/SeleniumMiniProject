@@ -11,7 +11,9 @@
     <!-- Listeners -->
     <listeners>
         <listener class-name="com.propfind.listeners.ExtentReportListener"/>
-        <listener class-name="com.propfind.listeners.TestListener"/>
+        <!-- TestListener removed: it duplicated Extent Reports and was blind to
+             Cucumber scenario-level results. Screenshots and pass/fail for Cucumber
+             scenarios are captured per-scenario in each feature's Hooks class. -->
     </listeners>
 
     <!-- Optional overrides -->
@@ -106,9 +108,23 @@
     </test>
 
     <!-- ═══════════════════════════════════════════════════════════════
-         Pending — no feature file or runner yet:
-         US13  Add Listing       (Sherin)  → AddListingTest
-         US15  Moving Assistant  (Sherin)  → MovingAssistantTest
+         US13  Add Listing  (Sherin)
+         Cucumber runner · AddListing.feature
     ════════════════════════════════════════════════════════════════════ -->
+    <test name="Add Listing Tests">
+        <classes>
+            <class name="com.propfind.runners.AddListingTest"/>
+        </classes>
+    </test>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         US15  Moving Assistant  (Sherin)
+         Cucumber runner · MovingAssistant.feature
+    ════════════════════════════════════════════════════════════════════ -->
+    <test name="Moving Assistant Tests">
+        <classes>
+            <class name="com.propfind.runners.MovingAssistantTest"/>
+        </classes>
+    </test>
 
 </suite>

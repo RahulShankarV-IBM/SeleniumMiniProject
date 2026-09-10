@@ -1,30 +1,28 @@
 package com.propfind.hooks;
 
-import com.propfind.context.DashboardTestContext;
+import com.propfind.context.AddListingTestContext;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
 
 /**
- * Cucumber hooks for the Dashboard feature.
- * Authenticates user before scenario (Auth-protected page) and
- * handles screenshot-on-failure and driver teardown per scenario.
+ * Cucumber hooks for the Add Listing feature (TC61–TC65).
+ * Handles screenshot-on-failure and driver teardown per scenario.
  */
-public class DashboardHooks {
+public class AddListingHooks {
 
-    private final DashboardTestContext ctx;
+    private final AddListingTestContext ctx;
 
-    public DashboardHooks(DashboardTestContext ctx) {
+    public AddListingHooks(AddListingTestContext ctx) {
         this.ctx = ctx;
     }
 
-    @Before("@US07 or @US11")
+    @Before("@US13")
     public void beforeScenario(Scenario scenario) {
-        // Authenticate into dashboard session prior to scenario execution
-        ctx.getDashboardPage().loginAs(DashboardTestContext.getBaseUrl(), "demo", "demo123");
+        // Nothing needed before each AddListing scenario — driver initialises lazily on first step.
     }
 
-    @After("@US07 or @US11")
+    @After("@US13")
     public void afterScenario(Scenario scenario) {
         if (scenario.isFailed()) {
             try {
@@ -32,6 +30,7 @@ public class DashboardHooks {
                         .getScreenshotAs(org.openqa.selenium.OutputType.BYTES);
                 scenario.attach(screenshot, "image/png", "Failure screenshot");
             } catch (Exception ignored) {
+                // Driver may already be gone; skip screenshot silently
             }
         }
         ctx.getDriver().quit();

@@ -238,6 +238,194 @@ public class DashboardPage {
                    .getText().trim();
     }
 
+    // ── Session / state helpers (called from step Given clauses) ──────────────
+
+    /**
+     * Returns true when the dashboard sidebar is visible, confirming the session
+     * is active (nav-favorites is only rendered when a user is logged in).
+     */
+    public boolean isUserLoggedIn() {
+        try {
+            return wait.until(ExpectedConditions.visibilityOfElementLocated(NAV_FAVORITES)).isDisplayed();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * Adds a single property id to the current user's favorites array in
+     * localStorage and re-seeds sessionStorage so the page reflects it on reload.
+     */
+    public void addFavorite(int propertyId) {
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        js.executeScript(
+            "const raw = localStorage.getItem('prop_users');" +
+            "if (!raw) return;" +
+            "const users = JSON.parse(raw);" +
+            "const sess  = JSON.parse(sessionStorage.getItem('prop_current_user') || 'null');" +
+            "if (!sess) return;" +
+            "const user = users.find(u => u.id === sess.id);" +
+            "if (!user) return;" +
+            "if (!user.favorites.includes(arguments[0])) user.favorites.push(arguments[0]);" +
+            "localStorage.setItem('prop_users', JSON.stringify(users));" +
+            "sessionStorage.setItem('prop_current_user', JSON.stringify(user));",
+            propertyId);
+    }
+
+    /**
+     * Replaces the current user's recentlyViewed list with the supplied ids
+     * (first argument = most recently viewed).
+     */
+    public void setRecentlyViewed(int... ids) {
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        StringBuilder idsJs = new StringBuilder("[");
+        for (int i = 0; i < ids.length; i++) {
+            idsJs.append(ids[i]);
+            if (i < ids.length - 1) idsJs.append(",");
+        }
+        idsJs.append("]");
+        js.executeScript(
+            "const raw = localStorage.getItem('prop_users');" +
+            "if (!raw) return;" +
+            "const users = JSON.parse(raw);" +
+            "const sess  = JSON.parse(sessionStorage.getItem('prop_current_user') || 'null');" +
+            "if (!sess) return;" +
+            "const user = users.find(u => u.id === sess.id);" +
+            "if (!user) return;" +
+            "user.recentlyViewed = " + idsJs + ";" +
+            "localStorage.setItem('prop_users', JSON.stringify(users));" +
+            "sessionStorage.setItem('prop_current_user', JSON.stringify(user));");
+    }
+
+    /**
+     * Replaces both favorites and recentlyViewed for the current user in one call.
+     */
+    public void setUserFavoritesAndRecent(List<Integer> favoriteIds, List<Integer> recentIds) {
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+        String favsJs   = favoriteIds.toString();  // e.g. "[1, 2]"
+        String recentJs = recentIds.toString();
+        js.executeScript(
+            "const raw = localStorage.getItem('prop_users');" +
+            "if (!raw) return;" +
+            "const users = JSON.parse(raw);" +
+            "const sess  = JSON.parse(sessionStorage.getItem('prop_current_user') || 'null');" +
+            "if (!sess) return;" +
+            "const user = users.find(u => u.id === sess.id);" +
+            "if (!user) return;" +
+            "user.favorites      = " + favsJs + ";" +
+            "user.recentlyViewed = " + recentJs + ";" +
+            "localStorage.setItem('prop_users', JSON.stringify(users));" +
+            "sessionStorage.setItem('prop_current_user', JSON.stringify(user));");
+    }
+
+    // ── Section navigation aliases (DashboardSteps naming convention) ─────────
+
+    public void openFavoritesSection()     { clickFavoritesNav(); }
+    public void openRecentSection()        { clickRecentNav(); }
+    public void openPreferencesSection()   { clickPreferencesNav(); }
+    public void openRecommendationsSection() { clickRecommendationsNav(); }
+
+    // ── Preference field aliases ───────────────────────────────────────────────
+
+    public void selectPreferredCity(String city)        { selectCity(city); }
+    public void selectPreferredPurpose(String purpose)  { selectPurpose(purpose); }
+    public void selectPreferredBhk(String bhk)          { selectBhk(bhk); }
+    public void enterMaxBudget(String budget)            { enterBudget(budget); }
+
+    // ── Alert toggle ──────────────────────────────────────────────────────────
+
+    /** Flips the current state of the alerts toggle regardless of direction. */
+    public void toggleAlerts() {
+        WebElement toggle = wait.until(ExpectedConditions.presenceOfElementLocated(ALERTS_TOGGLE));
+        jsClick(toggle);
+    }
+
+    public String getAlertStatusText() { return getAlertStatusLabelText(); }
+
+    // ── Favourites query aliases ───────────────────────────────────────────────
+
+    public int getFavoritesCount() { return getFavoriteCount(); }
+
+    /**
+     * Returns true when a favorite card whose remove-button id contains the
+     * given property id exists in the favorites list.
+     */
+    public boolean isFavoritePresent(int propertyId) {
+        try {
+            wait.until(ExpectedConditions.visibilityOfElementLocated(FAVS_LIST));
+            return !driver.findElements(
+                By.id("btn-remove-fav-" + propertyId)).isEmpty();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * Removes the favorite card matching the given property id by clicking its
+     * remove button directly (id-based, not index-based).
+     */
+    public void removeFavorite(int propertyId) {
+        wait.until(ExpectedConditions.visibilityOfElementLocated(FAVS_LIST));
+        WebElement removeBtn = wait.until(
+            ExpectedConditions.elementToBeClickable(By.id("btn-remove-fav-" + propertyId)));
+        jsClick(removeBtn);
+        wait.until(ExpectedConditions.presenceOfElementLocated(FAVS_LIST));
+    }
+
+    // ── Recently Viewed query ─────────────────────────────────────────────────
+
+    public boolean isRecentlyViewedListDisplayed() {
+        try {
+            wait.until(ExpectedConditions.visibilityOfElementLocated(PANEL_RECENT));
+            return !driver.findElement(RECENT_LIST)
+                          .findElements(By.cssSelector(".mini-card")).isEmpty();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public String getFirstRecentlyViewedTitle() {
+        wait.until(ExpectedConditions.visibilityOfElementLocated(PANEL_RECENT));
+        List<WebElement> cards = driver.findElement(RECENT_LIST)
+                                       .findElements(By.cssSelector(".mini-card"));
+        if (cards.isEmpty()) return "";
+        WebElement title = cards.get(0).findElement(By.cssSelector(".card-title, h4, h3, .title"));
+        return title.getText().trim();
+    }
+
+    // ── Preferences saved alert ───────────────────────────────────────────────
+
+    public boolean isPrefSavedAlertVisible() { return isPreferencesSavedAlertDisplayed(); }
+
+    public String getPrefSavedAlertText() {
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(
+            By.cssSelector("#pref-saved-alert .alert"))).getText().trim();
+    }
+
+    // ── Recommendations visibility ────────────────────────────────────────────
+
+    public boolean areRecommendationsVisible() {
+        try {
+            return getRecommendationCount() > 0;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * Checks whether the recommendations grid inside the Preferences panel
+     * (id=pref-reco-grid) contains at least one card.
+     */
+    public boolean arePreferenceRecommendationsVisible() {
+        try {
+            wait.until(ExpectedConditions.visibilityOfElementLocated(PANEL_PREFERENCES));
+            return !driver.findElement(By.id("pref-reco-grid"))
+                          .findElements(By.cssSelector(".card")).isEmpty();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     // ── Helpers ───────────────────────────────────────────────────────────────
 
     private void jsClick(WebElement element) {

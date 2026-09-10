@@ -17,12 +17,12 @@ public class MapViewHooks {
         this.ctx = ctx;
     }
 
-    @Before
+    @Before("@US04")
     public void beforeScenario(Scenario scenario) {
-        // Nothing needed before each scenario — driver is created in MapViewTestContext constructor
+        // Nothing needed before each MapView scenario — driver initialises lazily on first step.
     }
 
-    @After
+    @After("@US04")
     public void afterScenario(Scenario scenario) {
         if (scenario.isFailed()) {
             try {
