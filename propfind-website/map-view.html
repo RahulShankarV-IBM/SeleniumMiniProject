@@ -68,7 +68,8 @@
         <button type="button" class="overlay-btn active" id="btn-props" onclick="toggleOverlay('props',this)">🏠 Properties</button>
         <button type="button" class="overlay-btn" id="btn-schools" onclick="toggleOverlay('schools',this)">🏫 Schools</button>
         <button type="button" class="overlay-btn" id="btn-hospitals" onclick="toggleOverlay('hospitals',this)">🏥 Hospitals</button>
-        <button type="button" class="overlay-btn" id="btn-metro" onclick="toggleOverlay('metro',this)">🚇 Metro</button>
+        <!-- BUG-TC20: btn-metro id renamed — test cannot find the metro overlay button -->
+        <button type="button" class="overlay-btn" id="btn-metro-overlay" onclick="toggleOverlay('metro',this)">🚇 Metro</button>
       </div>
       <div style="font-size:0.82rem;color:var(--text-muted)" id="map-count">Showing 10 properties</div>
     </div>
@@ -163,7 +164,8 @@
 
   function renderMapList() {
     const list = document.getElementById('map-prop-list');
-    document.getElementById('map-count').textContent = `Showing ${filteredProps.length} properties`;
+    // BUG-TC17: map-count always shows 0 regardless of actual filtered properties
+    document.getElementById('map-count').textContent = `Showing 0 properties`;
     list.innerHTML = filteredProps.map(p => `
       <div class="prop-list-item" id="list-${p.id}" onclick="focusProp(${p.id})">
         <img src="${p.images[0]}" class="prop-list-img" alt="${p.title}" onerror="this.style.display='none'"/>

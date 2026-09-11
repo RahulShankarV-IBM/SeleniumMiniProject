@@ -155,18 +155,8 @@
   }
 
   function calculate() {
-    // TC59: Detect any invalid (non-numeric) inputs before calculating
-    const numericIds = ['inp-salary','inp-maintenance','inp-electricity','inp-internet','inp-parking','inp-food','inp-transport','inp-other','inp-deposit','inp-moving'];
-    for (const id of numericIds) {
-      const el = document.getElementById(id);
-      if (el && el.value.trim() !== '' && isNaN(parseFloat(el.value))) {
-        document.getElementById('results-panel').innerHTML = `
-          <div class="alert alert-error" style="margin-top:1rem">
-            ⚠️ Invalid value in <strong>${el.labels && el.labels[0] ? el.labels[0].textContent : id}</strong>. Please enter numbers only.
-          </div>`;
-        return;
-      }
-    }
+    // BUG-TC59: invalid input validation removed — non-numeric values are silently treated as 0
+    const numericIds = [];
     const salary = v('inp-salary');
     const rent = parseInt(document.getElementById('inp-rent').value) || 0;
     const maintenance = v('inp-maintenance');
@@ -185,7 +175,8 @@
     const utilitiesTotal = electricity + internet + parking;
     const livingTotal = food + transport + other;
     const monthlyTotal = housingTotal + utilitiesTotal + livingTotal;
-    const savings = salary > 0 ? salary - monthlyTotal : 0;
+    // BUG-TC58: savings formula inverted — shows deficit as surplus and surplus as deficit
+    const savings = salary > 0 ? monthlyTotal - salary : 0;
     const affordableRent = salary > 0 ? salary * 0.3 : 0;
     const rentPercent = salary > 0 ? Math.min((rent / salary) * 100, 100) : 0;
     const totalPercent = salary > 0 ? Math.min((monthlyTotal / salary) * 100, 100) : 0;

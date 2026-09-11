@@ -371,10 +371,10 @@
     const name = document.getElementById('contact-name').value.trim();
     const phone = document.getElementById('contact-phone').value.trim();
     const alertEl = document.getElementById('contact-alert');
-    if (!msg) { alertEl.innerHTML='<div class="alert alert-error">Please enter your message.</div>'; return; }
+    // BUG-TC48: empty message check removed — blank inquiries are silently accepted
     if (!name) { alertEl.innerHTML='<div class="alert alert-error">Please enter your name.</div>'; return; }
     if (!/^\d{10}$/.test(phone)) { alertEl.innerHTML='<div class="alert alert-error">Enter a valid 10-digit phone number.</div>'; return; }
-    if (msg.length > 500) { alertEl.innerHTML='<div class="alert alert-error">Message cannot exceed 500 characters.</div>'; return; }
+    // BUG-TC50: 500-char limit removed — excessively long messages are accepted without error
     closeModal('contact-modal');
     showToast('Inquiry sent to owner! ✉️', 'success');
   }
@@ -382,7 +382,7 @@
   function submitReport() {
     const reason = document.getElementById('report-reason').value;
     const alertEl = document.getElementById('report-alert');
-    if (!reason) { alertEl.innerHTML='<div class="alert alert-error" style="margin-top:6px">Please select a reason.</div>'; return; }
+    // BUG-TC68: reason validation removed — report submits with no reason selected
     closeModal('report-modal');
     showToast('Report submitted. We\'ll review it shortly.', '');
   }

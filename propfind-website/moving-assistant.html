@@ -221,7 +221,8 @@
     <!-- Tenant Verification -->
     <div class="section-card">
       <h3>🪪 Tenant Verification Checklist</h3>
-      <div id="checklist-tenant"></div>
+      <!-- BUG-TC73: id renamed so test cannot find the tenant checklist container -->
+      <div id="checklist-tenant-panel"></div>
     </div>
 
     <!-- Property Verification -->
@@ -314,7 +315,8 @@
     <div class="progress-section">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
         <span style="font-weight:700">Overall Setup Progress</span>
-        <span id="prog-pct" style="font-weight:900;color:var(--primary)">0%</span>
+        <!-- BUG-TC75: prog-pct id renamed — test cannot find the overall progress percentage element -->
+        <span id="prog-overall-pct" style="font-weight:900;color:var(--primary)">0%</span>
       </div>
       <div class="prog-bar-bg"><div class="prog-bar-fill" id="prog-fill" style="width:0%"></div></div>
       <div class="prog-label" id="prog-label">0 of 0 tasks completed</div>
@@ -497,34 +499,22 @@ function resetProgress() {
 }
 
 function renderChecklists() {
-  renderChecklist('tenant',   'checklist-tenant');
+  // BUG-TC73: tenant checklist container id is passed incorrectly — checklist items never render inside it
+  renderChecklist('tenant',   'checklist-tenant-items');
   renderChecklist('property', 'checklist-property');
   renderChecklist('movein',   'checklist-movein');
 }
 
 // ---- Document download (TC72) ----
 function downloadDoc(filename) {
-  // Create a minimal PDF-like text download (no external URL needed)
-  const docContent = {
-    'Rental_Agreement_11Month.pdf': `RENTAL AGREEMENT (11-Month Lease)\n\nThis agreement is entered into between the Landlord and Tenant...\n[Full template - PropFind]`,
-    'Leave_Licence_Agreement.pdf':  `LEAVE AND LICENCE AGREEMENT\n\nThis Leave and Licence Agreement is made on...\n[Full template - PropFind]`,
-    'Inventory_Checklist.pdf':      `PROPERTY INVENTORY CHECKLIST\n\nRoom-by-room furniture and appliance inventory...\n[Full template - PropFind]`,
-    'Tenant_Verification_Form.pdf': `TENANT POLICE VERIFICATION FORM\n\nDetails to be submitted at the local police station...\n[Full template - PropFind]`,
-    'KYC_Checklist.pdf':            `KYC DOCUMENTS CHECKLIST\n\n1. Aadhaar Card (Original + Copy)\n2. PAN Card\n3. 2 Passport-size photos\n4. Address proof...\n[PropFind]`
-  };
-  const content = docContent[filename] || 'Document content - PropFind';
+  // BUG-TC72: download function throws a ReferenceError — doc-panel navigates away on error
+  // crashing the page so isDocumentsPanelVisible() returns false
+  const content = DOCUMENT_TEMPLATES[filename]; // ReferenceError: DOCUMENT_TEMPLATES is not defined
   const blob = new Blob([content], { type: 'text/plain' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = filename.replace('.pdf', '.txt'); // plain text download for demo
+  a.download = filename;
   a.click();
-  // Track download for progress
-  let docs = JSON.parse(localStorage.getItem('propfind_ma_docs') || '[]');
-  if (!docs.includes(filename)) docs.push(filename);
-  localStorage.setItem('propfind_ma_docs', JSON.stringify(docs));
-  showToast('Document downloaded: ' + filename, 'success');
-  document.getElementById('doc-alert').innerHTML = '<div class="alert alert-success">✅ ' + filename + ' downloaded successfully.</div>';
-  setTimeout(() => { const el = document.getElementById('doc-alert'); if (el) el.innerHTML = ''; }, 4000);
 }
 
 function handleDocUpload(input) {

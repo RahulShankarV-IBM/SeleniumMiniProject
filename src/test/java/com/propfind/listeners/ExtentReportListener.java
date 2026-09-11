@@ -1,10 +1,5 @@
 package com.propfind.listeners;
 
-import com.aventstack.extentreports.ExtentReports;
-import com.aventstack.extentreports.ExtentTest;
-import com.aventstack.extentreports.Status;
-import com.aventstack.extentreports.reporter.ExtentSparkReporter;
-import com.aventstack.extentreports.reporter.configuration.Theme;
 import com.propfind.base.BaseTestClass;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -13,114 +8,104 @@ import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
 
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 /**
  * TestNG listener that builds an Extent Reports HTML report.
  * Registered in test.xml — no changes needed in test classes.
  *
- * Screenshot capture works for plain TestNG tests that extend BaseTestClass.
- * For Cucumber scenarios, screenshots are attached directly via scenario.attach()
- * in each feature's Hooks class (@After hook) — that path is intentional and
- * independent of this listener.
+ * <h3>Cucumber vs plain TestNG tests</h3>
+ * When Cucumber runs via {@code AbstractTestNGCucumberTests}, every scenario
+ * is reported as a TestNG method named {@code runScenario}.  That generic name
+ * is useless in the report.  Instead, {@link CucumberExtentHooks} creates a
+ * properly named, tagged node for every Cucumber scenario via the shared
+ * {@link ExtentReportManager} — this listener skips those calls entirely.
  *
- * Output: target/extent-reports/ExtentReport_<timestamp>.html
+ * For <em>plain TestNG</em> tests (classes that extend {@link BaseTestClass}),
+ * this listener still creates named nodes using the method name and groups.
+ *
+ * Output: {@code target/extent-reports/ExtentReport_<timestamp>.html}
  */
 public class ExtentReportListener implements ITestListener {
-
-    private static ExtentReports extent;
-    // One ExtentTest node per thread so parallel runs don't collide
-    private static final ThreadLocal<ExtentTest> testNode = new ThreadLocal<>();
 
     // ── Suite lifecycle ───────────────────────────────────────────────────────
 
     @Override
     public void onStart(ITestContext context) {
-        if (extent != null) return; // already initialised by a prior <test> block
-
-        String timestamp  = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String reportDir  = "target/extent-reports";
-        String reportFile = reportDir + "/ExtentReport_" + timestamp + ".html";
-
-        new File(reportDir).mkdirs();
-
-        ExtentSparkReporter spark = new ExtentSparkReporter(reportFile);
-        spark.config().setDocumentTitle("PropFind – Test Report");
-        spark.config().setReportName("PropFind Selenium Suite");
-        spark.config().setTheme(Theme.STANDARD);
-        spark.config().setEncoding("UTF-8");
-
-        extent = new ExtentReports();
-        extent.attachReporter(spark);
-        extent.setSystemInfo("Project",     "PropFind");
-        extent.setSystemInfo("Environment", "Local file://");
-        extent.setSystemInfo("Browser",     "Chrome");
-        extent.setSystemInfo("Java",        System.getProperty("java.version"));
+        // Delegate initialisation to the shared manager (no-op if already done).
+        ExtentReportManager.init();
     }
 
     @Override
     public void onFinish(ITestContext context) {
-        if (extent != null) {
-            extent.flush();
-        }
+        ExtentReportManager.flush();
     }
 
     // ── Test lifecycle ────────────────────────────────────────────────────────
 
     @Override
     public void onTestStart(ITestResult result) {
+        // Skip Cucumber runner methods — CucumberExtentHooks handles those.
+        if (isCucumberRunner(result)) return;
+
         String name        = result.getMethod().getMethodName();
         String description = result.getMethod().getDescription();
         String[] groups    = result.getMethod().getGroups();
 
-        ExtentTest node = extent.createTest(name, description);
-        for (String g : groups) node.assignCategory(g);
-        testNode.set(node);
+        ExtentReportManager.startTest(name, description, groups);
     }
 
     @Override
     public void onTestSuccess(ITestResult result) {
-        testNode.get().log(Status.PASS, "Test passed");
+        if (isCucumberRunner(result)) return;
+        ExtentReportManager.passTest("Test passed");
     }
 
     @Override
     public void onTestFailure(ITestResult result) {
-        ExtentTest node = testNode.get();
-        node.log(Status.FAIL, result.getThrowable());
+        if (isCucumberRunner(result)) return;
 
-        // Attach screenshot only for plain TestNG tests that extend BaseTestClass.
-        // Cucumber scenario screenshots are handled in each feature's Hooks (@After).
+        ExtentReportManager.failTest(result.getThrowable());
+
+        // Attach screenshot for plain TestNG tests that extend BaseTestClass.
         WebDriver driver = getDriverFromTestNG(result);
         if (driver instanceof TakesScreenshot ts) {
             try {
                 byte[] png = ts.getScreenshotAs(OutputType.BYTES);
                 String b64 = java.util.Base64.getEncoder().encodeToString(png);
-                node.addScreenCaptureFromBase64String(b64, "Failure screenshot");
+                ExtentReportManager.attachScreenshot(b64, "Failure screenshot");
             } catch (Exception ignored) {
-                node.log(Status.WARNING, "Could not capture screenshot: " + ignored.getMessage());
+                ExtentReportManager.failTest("Could not capture screenshot: " + ignored.getMessage());
             }
         }
     }
 
     @Override
     public void onTestSkipped(ITestResult result) {
+        if (isCucumberRunner(result)) return;
+
         if (result.getThrowable() != null) {
-            testNode.get().log(Status.SKIP, result.getThrowable());
+            ExtentReportManager.skipTest(result.getThrowable().getMessage());
         } else {
-            testNode.get().log(Status.SKIP, "Test skipped");
+            ExtentReportManager.skipTest("Test skipped");
         }
     }
 
-    // ── Helper ────────────────────────────────────────────────────────────────
+    // ── Helpers ───────────────────────────────────────────────────────────────
 
     /**
-     * Retrieves the WebDriver from the test instance when it extends BaseTestClass
-     * (plain TestNG tests). Returns null for Cucumber runners —
-     * those attach screenshots via scenario.attach() in their Hooks class instead.
+     * Returns true when the TestNG result belongs to a Cucumber runner.
+     * Cucumber's {@code AbstractTestNGCucumberTests} calls every scenario as a
+     * method named {@code runScenario} — that's the reliable discriminator.
      */
-    private WebDriver getDriverFromTestNG(ITestResult result) {
+    private static boolean isCucumberRunner(ITestResult result) {
+        return "runScenario".equals(result.getMethod().getMethodName());
+    }
+
+    /**
+     * Retrieves the WebDriver from the test instance when it extends
+     * {@link BaseTestClass} (plain TestNG tests).
+     * Returns null for Cucumber runners.
+     */
+    private static WebDriver getDriverFromTestNG(ITestResult result) {
         Object instance = result.getInstance();
         if (instance instanceof BaseTestClass base) {
             return base.getDriver();

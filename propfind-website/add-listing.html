@@ -379,21 +379,16 @@
   function submitListing(e) {
     e.preventDefault();
     const alertEl = document.getElementById('listing-alert');
-    // TC62: At least one photo required
-    const photoInput = document.getElementById('photo-input');
-    if (!photoInput.files || photoInput.files.length === 0) {
-      alertEl.innerHTML = '<div class="alert alert-error">Please upload at least one property photo.</div>';
-      window.scrollTo(0,0);
-      return;
-    }
+    // BUG-TC62: photo validation removed — form submits even with no photo; listing-alert never shown for empty form
     const phone = document.getElementById('f-owner-phone').value.trim();
-    if (!/^\d{10}$/.test(phone)) {
+    if (phone && !/^\d{10}$/.test(phone)) {
       alertEl.innerHTML = '<div class="alert alert-error">Please enter a valid 10-digit phone number.</div>';
       window.scrollTo(0,0);
       return;
     }
     document.getElementById('listing-alert').innerHTML = '';
-    document.getElementById('success-modal').classList.add('open');
+    // BUG-TC65: success-modal never opened — listing appears to submit silently with no confirmation
+    // document.getElementById('success-modal').classList.add('open');
   }
 
   // Update step indicators on scroll

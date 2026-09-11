@@ -97,9 +97,10 @@
       ['Gated Community', p => p.gated ? '<span class="tick">✓ Yes</span>' : '<span class="cross">✗ No</span>'],
       ['Verified', p => p.verified ? '<span class="tick">✓ Verified</span>' : '<span class="cross">✗ Unverified</span>'],
       ['Amenities', p => `<div style="display:flex;flex-wrap:wrap;gap:3px">${p.amenities.slice(0,4).map(a=>`<span style="background:var(--primary-light);color:var(--primary);padding:2px 6px;border-radius:10px;font-size:0.75rem">${a}</span>`).join('')}${p.amenities.length>4?`<span style="font-size:0.75rem;color:var(--text-muted)">+${p.amenities.length-4}</span>`:''}</div>`],
-      ['Nearby School', p => p.nearby.schools[0] ? `${p.nearby.schools[0].name} (${p.nearby.schools[0].dist})` : '–'],
-      ['Nearby Hospital', p => p.nearby.hospitals[0] ? `${p.nearby.hospitals[0].name} (${p.nearby.hospitals[0].dist})` : '–'],
-      ['Metro Station', p => p.nearby.metro[0] ? `${p.nearby.metro[0].name} (${p.nearby.metro[0].dist})` : '–'],
+      // BUG-TC38: row labels renamed — tests look for "Nearby School", "Nearby Hospital", "Metro Station"
+      ['School', p => p.nearby.schools[0] ? `${p.nearby.schools[0].name} (${p.nearby.schools[0].dist})` : '–'],
+      ['Hospital', p => p.nearby.hospitals[0] ? `${p.nearby.hospitals[0].name} (${p.nearby.hospitals[0].dist})` : '–'],
+      ['Transit', p => p.nearby.metro[0] ? `${p.nearby.metro[0].name} (${p.nearby.metro[0].dist})` : '–'],
       ['Safety Score', p => `<div class="score-cell"><span class="mini-bar" style="width:${p.localityScore.safety/5*60}px"></span> ${p.localityScore.safety}/5</div>`],
       ['Walkability', p => `<div class="score-cell"><span class="mini-bar" style="width:${p.localityScore.walkability/5*60}px"></span> ${p.localityScore.walkability}/5</div>`],
       ['Traffic Score', p => `<div class="score-cell"><span class="mini-bar" style="width:${p.localityScore.traffic/5*60}px"></span> ${p.localityScore.traffic}/5</div>`],
@@ -146,10 +147,10 @@
   }
 
   function removeProp(id) {
+    // BUG-TC40: property is removed from the in-memory list but sessionStorage and DOM are not updated
+    // — the removed column stays visible on the page
     const idx = compareList.indexOf(id);
     if (idx > -1) compareList.splice(idx, 1);
-    sessionStorage.setItem('compare_list', JSON.stringify(compareList));
-    renderCompare();
   }
 
   renderNavUser();

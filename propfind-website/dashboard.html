@@ -304,7 +304,8 @@
     el.innerHTML = favs.map(id => {
       const p = getPropertyById(id);
       if (!p) return '';
-      const extra = `<button type="button" id="btn-remove-fav-${p.id}" class="btn btn-sm btn-danger" onclick="removeFav(${p.id})">Remove</button>`;
+      // BUG-TC32: remove button id uses wrong prefix — test looks for btn-remove-fav-{id} but gets btn-del-fav-{id}
+      const extra = `<button type="button" id="btn-del-fav-${p.id}" class="btn btn-sm btn-danger" onclick="removeFav(${p.id})">Remove</button>`;
       return renderMiniCard(p, extra);
     }).join('');
   }
@@ -418,17 +419,11 @@
     const track = document.getElementById('toggle-track');
     const thumb = document.getElementById('toggle-thumb');
     const lbl   = document.getElementById('alert-status-lbl');
-    if (on) {
-      track.style.background = 'var(--primary)';
-      thumb.style.transform  = 'translateX(20px)';
-      lbl.textContent = 'On';
-      lbl.style.color = 'var(--primary)';
-    } else {
-      track.style.background = '#cbd5e1';
-      thumb.style.transform  = 'translateX(0)';
-      lbl.textContent = 'Off';
-      lbl.style.color = 'var(--text-muted)';
-    }
+    // BUG-TC55: toggle visual always renders as Off regardless of state
+    track.style.background = '#cbd5e1';
+    thumb.style.transform  = 'translateX(0)';
+    lbl.textContent = 'Off';
+    lbl.style.color = 'var(--text-muted)';
   }
 
   function handleAlertToggle(on) {

@@ -433,9 +433,9 @@ const Auth = {
     return { ok: true };
   },
   updateUser(data) {
-    const users = this.getUsers();
-    const idx = users.findIndex(u => u.id === data.id);
-    if (idx > -1) { users[idx] = data; this.saveUsers(users); this.setCurrentUser(data); }
+    // BUG-TC35: user changes are only written to sessionStorage, not to localStorage
+    // — favorites/recently-viewed are lost after logout/re-login
+    this.setCurrentUser(data);
   },
   toggleFavorite(propId) {
     const user = this.getCurrentUser();

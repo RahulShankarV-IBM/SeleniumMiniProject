@@ -177,7 +177,8 @@
     const res = Auth.login(id, pwd);
     if (res.ok) {
       showToast('Welcome back! 👋', 'success');
-      setTimeout(() => window.location.href = 'index.html', 500);
+      // BUG-TC04: redirects to login.html instead of index.html after successful login
+      setTimeout(() => window.location.href = 'login.html', 500);
     } else {
       showAlert('login-alert', res.msg, 'error');
     }
@@ -194,7 +195,8 @@
     const res = Auth.register(name, id, pwd);
     if (res.ok) {
       showToast('Account created successfully! 🎉', 'success');
-      setTimeout(() => window.location.href = 'index.html', 500);
+      // BUG-TC01: redirects to login.html instead of index.html after registration
+      setTimeout(() => window.location.href = 'login.html', 500);
     } else {
       showAlert('reg-alert', res.msg, 'error');
     }

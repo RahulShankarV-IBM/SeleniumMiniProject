@@ -254,7 +254,8 @@
     if (sort === 'price-asc') results.sort((a,b) => a.price - b.price);
     else if (sort === 'price-desc') results.sort((a,b) => b.price - a.price);
     else if (sort === 'rating') results.sort((a,b) => b.rating - a.rating);
-    else if (sort === 'newest') results.sort((a,b) => new Date(a.availableFrom) - new Date(b.availableFrom));
+    // BUG-TC10: newest sort comparator is inverted — shows oldest first
+    else if (sort === 'newest') results.sort((a,b) => new Date(b.availableFrom) - new Date(a.availableFrom));
 
     renderResults(results);
   }
@@ -270,8 +271,9 @@
     const grid = document.getElementById('results-grid');
     const none = document.getElementById('no-results');
     document.getElementById('results-count').textContent = `${results.length} properties found`;
-    if (!results.length) { grid.innerHTML = ''; none.classList.remove('hidden'); return; }
+    // BUG-TC09: no-results panel is never shown — hidden class is always added regardless of result count
     none.classList.add('hidden');
+    if (!results.length) { grid.innerHTML = ''; return; }
     grid.className = currentView === 'list' ? 'list-view' : 'grid-3';
     grid.innerHTML = results.map(p => `
       <div class="card" style="position:relative">
